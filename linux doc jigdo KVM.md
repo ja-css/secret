@@ -31,7 +31,10 @@ An image of Debian with firmware embedded is available:
     Non-free Firmware
     This is an  **official**  Debian image build and so only includes Free Software.
 
--> (**FIRMWARE DVD IS HERE**) https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/ 
+-> (**FIRMWARE DVD IS HERE**) https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware
+*) ISO: https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/11.6.0+nonfree/amd64/iso-dvd/
+*) TorrentC: https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/11.6.0+nonfree/amd64/bt-dvd/
+`apt install transmission transmission-cli`
 
 Theoretically you can try to find your firmware and create a flash drive with it, so that you can use an "official" installation disk, there are places like:
 https://github.com/wkennington/linux-firmware
@@ -74,9 +77,12 @@ Input the following parameters:
 
 more info here: https://www.debian.org/CD/jigdo-cd/#how
 
+#### 4. firmware disk
+
 ## 3. Checksums
 `openssl sha256 FILENAME`
 `openssl sha512 FILENAME`
+
 
 # Installation
 

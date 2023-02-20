@@ -92,8 +92,16 @@ iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A OUTPUT -j ACCEPT
 ```
 
+Optionally switch to a mirror (consider https mirrors):
+`sudo nano /etc/apt/sources.list`
+listed here: https://www.raspbian.org/RaspbianMirrors
+Also, to avoid the system falling back to http on archive.raspberrypi.org, set
+`127.0.0.1 archive.raspberrypi.org` in /etc/hosts
+
 Then it's safer to
 `sudo apt-get update`
+
+**UPGRADE IS OPTIONAL**
 `sudo apt-get upgrade` - do we need to update/upgrade?
 Upgrade comes with some "diversions" and "rpikernelhack" I REALLY don't like
 
@@ -103,6 +111,7 @@ And install all:
 **!!! UNPLUG NETWORK AT THIS POINT!!!**
 
 After this, make sure bluetooth wasn't reinstated.
+`dpkg -l | grep -i blue`
 
 ## 2. WiFi hotspot: `hostapd`
 `sudo apt-get install hostapd`
@@ -251,8 +260,8 @@ iptables -A OUTPUT -s 10.1.1.10 -d 10.1.1.0/24 -o wlan0 -p udp --dport 67:68 --s
 #SSH
 # Allow ssh via ethernet if needed.
 # Via wifi might be less safe
-iptables -A INPUT -s 192.168.1.0/24 -d 192.168.1.10 -i eth0 -p tcp --dport 22 -j ACCEPT
-iptables -A OUTPUT -s 192.168.1.10 -d 192.168.1.0/24 -o eth0 -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
+# iptables -A INPUT -s 192.168.1.0/24 -d 192.168.1.10 -i eth0 -p tcp --dport 22 -j ACCEPT
+# iptables -A OUTPUT -s 192.168.1.10 -d 192.168.1.0/24 -o eth0 -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 #VPN
 #TODO: make VPN host the only allowed source and destination here
@@ -279,9 +288,11 @@ Apply rules:
 
 Save rules:
 `sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"`
+`sudo sh -c "ip6tables-save > /etc/iptables.ipv6.nat"`
 
 Load rules on startup - add the following line to `/etc/rc.local`, before `exit 0`:
 `iptables-restore < /etc/iptables.ipv4.nat`
+`ip6tables-restore < /etc/iptables.ipv6.nat`
 
 
 ## 10. Run OpenVPN on startup
@@ -295,6 +306,8 @@ Edit the config
 
 Save config to
 `/etc/openvpn/client.conf`
+Add 
+`auth-user-pass {PASSFILE}`
 
 run:
 ```
@@ -303,7 +316,9 @@ sudo systemctl daemon-reload
 sudo service openvpn@client start
 ```
 
-logs are in : /var/log/syslog
+OpenVPN client logs are in : /var/log/syslog
+
+# !!!! DONE !!!!
 
 ## P.S. If you didn't unmask hostapd earlier, unmask it
 ```
@@ -346,3 +361,55 @@ TODO:
 		# Server certificate (PEM or DER file) for EAP-TLS/PEAP/TTLS
 		#server_cert=/etc/hostapd.server.pem
 ```
+
+### Blocking all traffic except at TCP port 22
+
+Do you have a custom shell script for firewall? Then add the following rules to your iptables based shell script:
+
+/sbin/iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+/sbin/iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
+
+First rule will accept incoming (INPUT) tcp connection on port 22 (ssh server) and second rule will send response of incoming ssh server to client (OUTPUT) from our ssh server source port 22.
+
+### Shell script examples
+
+However, iptables with kernel 2.4/2.6/3.x/4.x/5.x provides very powerful facility to filter rule based upon different connection states such as established or new connection etc. Here is complete small script to do this task:
+
+```
+#!/bin/sh
+# Purpose: Linux Iptables Block All Incoming Traffic But Allow SSH @ TCP/22
+# -------------------------------------------------------------------------------------
+# My system IP/set ip address of server here
+SERVER_IP="65.55.12.13"
+ 
+# Flushing all rules
+iptables -F
+iptables -X
+ 
+# Setting default filter policy
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+ 
+# Allow unlimited traffic on loopback
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+ 
+# Allow incoming ssh only
+iptables -A INPUT -p tcp -s 0/0 -d $SERVER_IP --sport 513:65535 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp -s $SERVER_IP -d 0/0 --sport 22 --dport 513:65535 -m state --state ESTABLISHED -j ACCEPT
+ 
+# make sure nothing comes or goes out of this box
+iptables -A INPUT -j DROP
+iptables -A OUTPUT -j DROP
+```
+
+Raspberry pi disk encryption
+https://rr-developer.github.io/LUKS-on-Raspberry-Pi/
+
+Custom raspberry Pi image
+https://opensource.com/article/21/7/custom-raspberry-pi-image
+
+ubuntu disable  bluetooth
+
+For Ubuntu 20.10 For this ubuntu edit /etc/bluetooth/main.conf
