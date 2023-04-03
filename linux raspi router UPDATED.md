@@ -327,17 +327,29 @@ sudo systemctl enable hostapd
 sudo systemctl start hostapd
 ```
 
+
+# TODO: WPA2-enterprise
+
+https://www.bordergate.co.uk/wpa2-enteprise-access-point-with-linux/
+
+https://android.googlesource.com/platform/external/wpa_supplicant_8/+/master/hostapd/hostapd.eap_user
+---
+---
+---
+
+
+
 ## P.P.S To fix Realtek intermittent on-off issue:
 `sudo echo on | sudo tee /sys/bus/usb/devices/4-1/power/control`
 
 
 TODO:
 - disable avahi-daemon
-sudo systemctl disable avahi-daemon
+  sudo systemctl disable avahi-daemon
 
 - figure out why disabling dhcpcd breaks everything?
 	- https://forums.raspberrypi.com/viewtopic.php?t=138161
-https://linuxhint.com/raspberry_pi_static_ip_setup/
+	  https://linuxhint.com/raspberry_pi_static_ip_setup/
 
 TODO:
 - disable ssh login for unsecure nteworks
