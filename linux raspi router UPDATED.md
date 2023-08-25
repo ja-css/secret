@@ -272,6 +272,13 @@ iptables -I OUTPUT 1 -o eth0 -p udp --dport {VPN port} -d {VPN host} -j ACCEPT
 #OpenVPN TUN Forwarding
 iptables -A FORWARD -i tun0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -A FORWARD -i wlan0 -o tun0 -j ACCEPT
+iptables -A FORWARD -i wlan0 -o eth0 -j DROP  
+iptables -A FORWARD -i eth0 -o wlan0 -j DROP 
+
+# TODO: Do this also??? 
+#iptables -A FORWARD -i tun0 -o eth0 -j DROP  
+#iptables -A FORWARD -i eth0 -o tun0 -j DROP 
+
 iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
 
 # Optional debug packet logging (/var/log/kern.log)
@@ -340,7 +347,7 @@ https://android.googlesource.com/platform/external/wpa_supplicant_8/+/master/hos
 
 
 ## P.P.S To fix Realtek intermittent on-off issue:
-`sudo echo on | sudo tee /sys/bus/usb/devices/4-1/power/control`
+Didn't work `sudo echo on | sudo tee /sys/bus/usb/devices/4-1/power/control`
 
 
 TODO:
