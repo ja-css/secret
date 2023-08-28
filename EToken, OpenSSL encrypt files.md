@@ -21,13 +21,13 @@
 ## Encrypt file and Decrypt via pkcs11-tool and token
 
 - To enable this function we need to install private key via pkcs11-tool, not with SafeNet tools. That's because SafeNet tools create private keys with limited privileges:
-`Usage:  sign`
-while we need more extensive functionality, like:
-`Usage:  decrypt, sign, unwrap`
+  `Usage:  sign`
+  while we need more extensive functionality, like:
+  `Usage:  decrypt, sign, unwrap`
 
 - We encrypt using openssl, and we decrypt using our token. Maybe some versions of `pkcs11-tool` on some operating systems support both encrypt and decrypt, and work fine, but I wasn't able to find such instances. Instead of theorizing on that topic, this tutorial describes what actually works.
 
- 
+
 ### Create keys/certificate and write it to the token using pkcs11-tool
 
 Certificate creation process is the same as described in the document `EToken, certificates, ssh`.
@@ -42,13 +42,13 @@ pki/issued/meinung-data.crt
 ```
 
 1. Convert private key to DER format:
-`openssl rsa -in pki/private/meinung-data.key -outform DER -out meinung-data-key.der`
+   `openssl rsa -in pki/private/meinung-data.key -outform DER -out meinung-data-key.der`
 
 2. Convert certificate to DER format:
-`openssl x509 -outform DER -in pki/issued/meinung-data.crt -out meinung-data-crt.der`
+   `openssl x509 -outform DER -in pki/issued/meinung-data.crt -out meinung-data-crt.der`
 
 3. Extract public key from .key file:
-`openssl rsa -in pki/private/meinung-data.key -pubout -out meinung-data-public.key`
+   `openssl rsa -in pki/private/meinung-data.key -pubout -out meinung-data-public.key`
 
 4. Write those files to the token
 ```
@@ -62,22 +62,22 @@ pkcs11-tool --module /usr/lib/libeToken.so --login --write-object meinung-data-p
 #### We extract the certificate/public key from token to make it portable
 
 1. Create a data file to encrypt, e.g.
-`echo "Datum to encrypt should be longer, better, faster and whatever we need to hide in front of nasty eyes of the ones that should not see them. " > data`
+   `echo "Datum to encrypt should be longer, better, faster and whatever we need to hide in front of nasty eyes of the ones that should not see them. " > data`
 
 2. Get the certificate from the card:
-`pkcs11-tool --module /usr/lib/libeToken.so -r --id 1 --type cert > meinung-data.cert`    
+   `pkcs11-tool --module /usr/lib/libeToken.so -r --id 1 --type cert > meinung-data.cert`
 
 
 3. Convert certificate to public key (PEM format)
-`openssl x509 -inform DER -in meinung-data.cert -pubkey > meinung-data.pub`
+   `openssl x509 -inform DER -in meinung-data.cert -pubkey > meinung-data.pub`
 
 
 4. Encrypt file usen openssl
-`openssl rsautl -encrypt -inkey meinung-data.pub -in data -pubin -out data.crypt`
+   `openssl rsautl -encrypt -inkey meinung-data.pub -in data -pubin -out data.crypt`
 
 
 5. Decrypt file using eToken
-`pkcs11-tool --module /usr/lib/libeToken.so --login --id 1 --decrypt -i data.crypt -o data.new -m RSA-PKCS`
+   `pkcs11-tool --module /usr/lib/libeToken.so --login --id 1 --decrypt -i data.crypt -o data.new -m RSA-PKCS`
 
 
 ## WIPE (not delete) files

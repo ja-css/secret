@@ -29,7 +29,7 @@ The idea behind Flower is to implement a model that can be used for better struc
 
 Workflows of this kind are common to many different fields - they can be found in management of clusters, large horizontally scalable systems, in environments with many components each of which can fail at any time and no link or connection or service can be considered 100% reliable. Unsurprisingly, we also find quite a few examples of such logic in the space of platform integrations, where each service provider has its own complex systems with their own rules and our goal is to put them together and accommodate for all potential special cases, including, but not limited to aggressive throttling, changes of throughput and latency at different times of day or different days, and simply random network issues, so that everything works in the most reliable fashion and any problem is next to invisible, according to our customer's user experience.
 
-Flower was designed with this in mind and offers a model that allows to define complex Flows made of large number of Steps, easily manipulate transitioning between Steps, analyze execution results and errors and react accordingly, implement retrial strategies like exponential wait, etc. The core idea of this model is to decouple work logic of Step from logic of analysis of the results of Step's execution and the structure of transitions between Steps in a Flow; on the other hand allowing to implement and run subtasks as child Flows. 
+Flower was designed with this in mind and offers a model that allows to define complex Flows made of large number of Steps, easily manipulate transitioning between Steps, analyze execution results and errors and react accordingly, implement retrial strategies like exponential wait, etc. The core idea of this model is to decouple work logic of Step from logic of analysis of the results of Step's execution and the structure of transitions between Steps in a Flow; on the other hand allowing to implement and run subtasks as child Flows.
 
 On top of that, Flower programming model presents other noteworthy properties:
 - Execution structure of a Flow is clearly outlined and can be automatically visualized as a directed graph;
@@ -49,7 +49,7 @@ Some of my far-fetched thoughts and dreams of how Flower's model can change curr
 
 ## Example 1: "Hello world" flow
 
-We start with 2 code examples, so we can use them later as a reference. 
+We start with 2 code examples, so we can use them later as a reference.
 The first example is a simple Flow defined with Flower annotations. When an instance of this Flow is executed, it outputs (rather unexpectedly) "Hello world!".
 ```
      1 |  @FlowType(firstStep = "HELLO_STEP")
@@ -95,11 +95,11 @@ In the following example we initialize Flower engine by registering HelloWorldFl
 
 ## Flows and Steps
 
-Flows consist of Steps. 
-One of the Steps is marked as a `firstStep`, marking an entry point for our Flow. 
+Flows consist of Steps.
+One of the Steps is marked as a `firstStep`, marking an entry point for our Flow.
 
-Each Step has 2 responsibilities: 
-1) to execute custom logic related to the Step; 
+Each Step has 2 responsibilities:
+1) to execute custom logic related to the Step;
 2) to indicate which Step should execute after it (or terminate the Flow execution).
 
 This gives us the basic picture of Flow execution - we run the Step that's defined as `firstStep`, and then follow the chain of Transitions, executing Step after Step until we reach terminal state.
@@ -110,7 +110,7 @@ In our "HelloWorld" flow it looks like this:
     @FlowType(firstStep = "HELLO_STEP")
 ```
 The simplest way to mark a static method of a Flow as its Step would be to annotate the method with `@SimpleStepFunction`. Please note, that in this case the method must return either `Transition` or `ListenableFuture<Transition>`, which is required due to the 2nd responsibility of a Step - to define which Step should execute after it.
-Name of a Step can optionally be specified in annotation, otherwise Flower gets corresponding method name via reflection and uses that string as Step's name. 
+Name of a Step can optionally be specified in annotation, otherwise Flower gets corresponding method name via reflection and uses that string as Step's name.
 
 
 ## Step Function and Transit Function
@@ -180,15 +180,15 @@ Let's discuss those annotations and their meaning.
 
 Flow state-related parameters allow function to interact with Flow state:
 
-- **@In**: Input function parameter. Maps State field to a parameter. 
-It means that we inject the current value stored in State Field to this parameter in our function; 
+- **@In**: Input function parameter. Maps State field to a parameter.
+  It means that we inject the current value stored in State Field to this parameter in our function;
 
-- **@Out**: Output function parameter. Maps output parameter to a State Field. 
-It means that our function provides new value to update State Field with, after the function executed.
-The corresponding function parameter must be of type `OutPrm<StateFieldType>`,  and allows to set output either as a value, or as a ListenableFuture (methods `setOutValue(...)` and `setOutFuture(...)`);
+- **@Out**: Output function parameter. Maps output parameter to a State Field.
+  It means that our function provides new value to update State Field with, after the function executed.
+  The corresponding function parameter must be of type `OutPrm<StateFieldType>`,  and allows to set output either as a value, or as a ListenableFuture (methods `setOutValue(...)` and `setOutFuture(...)`);
 
 - **@InOut**: Combines the features of both `@In` and `@Out`, i.e. gives access to current value from State Field, and also allows to update the value of that State Field after the function executed.
-The corresponding function parameter must be of type `InOutPrm<StateFieldType>`. To get the current value of State Field, use method `getInValue()`. Similarly to `OutPrm`, methods `setOutValue(...)` and `setOutFuture(...)` allow to update value of a State Field.
+  The corresponding function parameter must be of type `InOutPrm<StateFieldType>`. To get the current value of State Field, use method `getInValue()`. Similarly to `OutPrm`, methods `setOutValue(...)` and `setOutFuture(...)` allow to update value of a State Field.
 
 ### Transitioner parameters
 
@@ -206,12 +206,12 @@ Parameters `@InRet` and `@InRetOrException` can only be used in `@TransitFunctio
 
 Those parameters can be used only in `@StepFunction` and `@SimpleStepFunction`.
 
-- **@FlowRepo**: Represents a reference to a Flow repository to query `FlowFuture`-s. 
-The corresponding function parameter must be of type `FlowRepoPrm`.
+- **@FlowRepo**: Represents a reference to a Flow repository to query `FlowFuture`-s.
+  The corresponding function parameter must be of type `FlowRepoPrm`.
 
 - **@FlowFactory**: allows to run a child flow of a current flow. Similarly to `FlowExec` in [example 2](#example-2-initializing-flower-and-running-an-instance-of-hello-world-flow) the factory is created for a specific Flow Class.
-The corresponding function parameter must be of type `FlowFactoryPrm<FlowClass>`. 
-Note: Flow Factory extends Flow Repo, so it can also be used to monitor the state of child flows.
+  The corresponding function parameter must be of type `FlowFactoryPrm<FlowClass>`.
+  Note: Flow Factory extends Flow Repo, so it can also be used to monitor the state of child flows.
 
 WARNING: Please Do **NOT** use objects `FlowExec` or `Flower` directly inside Flows. As a result of such usage, the information about parent-child relationships in Flows will be lost. (Both information about possible child Flows in Flow Classes, and actual parent-child references in Flow Instances). The latter would reduce available information about execution context for child Flow Objects, while the former would make parent-child cycle detection and diagramming inefficient.
 **TODO: @StepFunction(..., returnTo = "fromFlowerStr")**
@@ -224,11 +224,11 @@ Similarly to [Flow and Function names](#flow_and_function_names), parameter name
 `@In(name = "hello, ...) String hello`
 
 The following parameter annotations have other optional elements with default values:
-- **@In**, **@InFromFlow**: 
+- **@In**, **@InFromFlow**:
 	- from: from State field, defaults to Java parameter name;
-- **@Out**: 
+- **@Out**:
 	- to: to State field, defaults to Java parameter name;
-- **@InOut**: 
+- **@InOut**:
 	- fromAndTo: from and to State field, defaults to Java parameter name;
 - **@StepRef**:
 	- stepName: name of a Step, defaults to Java parameter name.
@@ -328,7 +328,7 @@ and finally
       }
 ```
 This might look tricky, and definitely is trickier than I wish it would be, but the reason it's introduced is to allow Transitioner code reusability in situations when annotations overhead is reasonable and justified. Ideally, when we trade a few lines of Transit Override annotations vs dozens of lines in reusable Transitioner (perhaps, with complex logic).
-There are ways to avoid using it altogether - for example extract Transition logic to a helper class, and use that method directly from the code of `@SimpleStepFunction`. However, that will make some Transitioner features unavailable - for example, auto-completing futures from StepFunction's `@Out`, `@InOut` and `@InRet`, or using `@InRetOrException` as a try-catch with multiple steps in a universal fashion. 
+There are ways to avoid using it altogether - for example extract Transition logic to a helper class, and use that method directly from the code of `@SimpleStepFunction`. However, that will make some Transitioner features unavailable - for example, auto-completing futures from StepFunction's `@Out`, `@InOut` and `@InRet`, or using `@InRetOrException` as a try-catch with multiple steps in a universal fashion.
 Later we will discuss Global Functions and Function Calls, and those features enable extended Transitioner reuse from different Flows, so one definitely might find a bit of value in Transitioner Parameter Override feature.
 But, in the end, the best measure is always good sense, and I suggest you apply it every time there is a need to evaluate something that can potentially make your code less readable.
 

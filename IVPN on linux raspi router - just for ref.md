@@ -2,7 +2,7 @@
 
 `Misc`  mirimir (gpg key 0x17C2E43E)
 
-  
+
 
 This how-to explains how to setup a Raspberry Pi 2 Model B v1.1 microcomputer as an IVPN gateway firewall/router, using Raspbian (Debian Wheezy). In addition to the Pi, you need an 8GB microSDHC card (preferably class 10) and a USB-to-ethernet adapter, which provides a second ethernet port (eth1). You connect the Pi’s WAN interface (eth0) to a LAN with Internet connectivity. An OpenVPN client establishes a VPN tunnel (tun0) to an IVPN server. The Pi forwards all traffic from devices attached to its LAN interface (eth1) through the VPN tunnel (tun0). Firewall rules allow outgoing connections on WAN (eth0) only to IVPN servers, Raspbian wheezy repository servers (for package updates) and NTP timeservers. No DNS servers are reachable via WAN (eth0) and so the IP addresses of these servers must be specified or resolved locally.
 

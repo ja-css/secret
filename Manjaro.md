@@ -8,7 +8,7 @@ exit 0
 ```
 
 2. Create service
-Create a file `/etc/systemd/system/rc-local.service`
+   Create a file `/etc/systemd/system/rc-local.service`
 ```
 [Unit]
 Description=/etc/rc.local Compatibility

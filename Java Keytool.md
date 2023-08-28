@@ -3,13 +3,13 @@ Create self-signed certificates and keystores for 2-way SSL.
 ---
 
 - Create server certificate and add it to the keystore
-`keytool -genkey -alias serverkey -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -keystore serverkeystore.jks -storepass password -ext san=ip:127.0.0.1,dns:localhost`
+  `keytool -genkey -alias serverkey -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -keystore serverkeystore.jks -storepass password -ext san=ip:127.0.0.1,dns:localhost`
 
 - Extract a certificate in pem format from the keystore (no private key)
-`keytool -exportcert -keystore serverkeystore.jks -alias serverkey -storepass password -rfc -file server-certificate.pem`
+  `keytool -exportcert -keystore serverkeystore.jks -alias serverkey -storepass password -rfc -file server-certificate.pem`
 
 - Add server certificate to client trust keystore
-`keytool -import -trustcacerts -file server-certificate.pem -keypass password -storepass password -keystore clienttruststore.jks`
+  `keytool -import -trustcacerts -file server-certificate.pem -keypass password -storepass password -keystore clienttruststore.jks`
 
 ---
 

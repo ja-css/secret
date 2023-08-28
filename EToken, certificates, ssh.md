@@ -1,3 +1,5 @@
+# EToken, certificates, ssh
+
 ## 0. Install debian
 
 - Use image without firmware
@@ -67,17 +69,17 @@ Version for BigSur: [here](http://support.certsign.ro/safenet/SafeNetAuthenticat
 Quote:
 [SafeNet Authentication Client_9.0_Users_Guide.pdf](https://knowledge.digicert.com/content/dam/digicertknowledgebase/attachment/solution/SO28683/SafeNet%20Authentication%20Client_9.0_Users_Guide.pdf)
 
-Importing a Certificate to a Token 
-The following certificate types are supported:  
-- *.pfx 
-- *.p12 
+Importing a Certificate to a Token
+The following certificate types are supported:
+- *.pfx
+- *.p12
 - *.cer
 
 I.e. ***.pem is NOT supported.**
 
 ### Ubuntu 20
 
-Download the client here: 
+Download the client here:
 https://knowledge.digicert.com/generalinformation/INFO1982.html
 Linux  
 [https://www.digicert.com/StaticFiles/SAC_10_7_Linux_GA.zip](https://www.digicert.com/StaticFiles/SAC_10_7_Linux_GA.zip)
@@ -93,7 +95,7 @@ then restart
 
 - Same as Ubuntu
 - make sure root's path has
-`echo "export PATH=$PATH:/sbin:/usr/sbin:/usr/local/sbin" >> ~/.bashrc`
+  `echo "export PATH=$PATH:/sbin:/usr/sbin:/usr/local/sbin" >> ~/.bashrc`
 - make sure easy-rsa is installed (step 1), it has some dependencies needed for the client to work.
 - Use GNOME
 - restart after install
@@ -126,10 +128,10 @@ This will create `my-key` and `my-key.pub`.
 
 
 * to connect to Amazon Linux on AWS - use user **ec2-user**:
-`ssh -i my-key ec2-user@HOSTNAME`
+  `ssh -i my-key ec2-user@HOSTNAME`
 
 * to connect to Ubuntu Linux on AWS - use user **admin**:
-`ssh -i my-key admin@HOSTNAME`
+  `ssh -i my-key admin@HOSTNAME`
 
 
 ### Route 2: easyrsa + pem certificate
@@ -137,7 +139,7 @@ This will create `my-key` and `my-key.pub`.
 - Create certificates (1.1), create *pem (1.2)
 - Create and import public key to create a key pair on AWS side (see 3.1).
 - login like this:
-	`ssh -i NAME.pem ec2-user@HOSTNAME`
+  `ssh -i NAME.pem ec2-user@HOSTNAME`
 
 
 ### Route 3: and the most important one - SSH with Safe Net token
@@ -150,7 +152,7 @@ Pretty straightforward via GUI client (import certificate).
 
 
 Use the following command to log in to the same server for **Route 2** with eToken:
-MacOS (tested on BigSur + SAC 10.2): 
+MacOS (tested on BigSur + SAC 10.2):
 `ssh -I /usr/local/lib/libeToken.dylib ec2-user@HOSTNAME`
 Linux (tested on Ubuntu + SAC 10.7):
 `ssh -I /usr/lib/libeToken.so ec2-user@HOSTNAME`

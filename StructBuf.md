@@ -88,9 +88,9 @@ typedef struct {
 
 Also, for each StructBuf structure the following functions will be generated:
 - `Struct sb_createStruct(uint32_t field,`
-`uint8_t arrayFieldLength, uint8_t* arrayField,`
-`SubStructure subStructure,` 
-`uint8_t subStructureArrayLength, SubStructure* subStructureArray);`
+  `uint8_t arrayFieldLength, uint8_t* arrayField,`
+  `SubStructure subStructure,`
+  `uint8_t subStructureArrayLength, SubStructure* subStructureArray);`
 - `void sb_saveStruct(void** cursor, Struct* _Struct);`
 - `Struct* sb_readStruct(void** cursor);`
 - `uint8_t sb_initStruct(void** cursor, Struct* _Struct);`
@@ -100,11 +100,11 @@ Also, for each StructBuf structure the following functions will be generated:
 - `uint8_t sb_isValidBufferSizeStruct(void** cursor, uint32_t bufferSize);`
 
 Those functions will use lower-level StreamUtils library under the hood to read and write data.  
-For more information on StreamUtils and cursors see [Appendix 1: StreamUtils](#appendix-1-streamutils).  
-  
+For more information on StreamUtils and cursors see [Appendix 1: StreamUtils](#appendix-1-streamutils).
+
 ### create function
 
-A constructor-like function with a parameter for each field of a struct, to instantiate structures manually. 
+A constructor-like function with a parameter for each field of a struct, to instantiate structures manually.
 **TODO**: Current implementation returns created structure by value and takes non-array parameters by value as well. One "pro" of this is that it's easy to distinguish between arrays and single fields because pointers mean arrays, and all allocations are on stack, so I'm not 100% sure if an optimization might be desired here.
 
 ### save function
@@ -117,9 +117,9 @@ Initializes structure by deserializing data on position defined by cursor.
 Return value:
 - 0 (false) - initialization succeeded;
 - Error code.
-**TODO**: error codes need to be defined and checks implemented, e.g. array length exceeds limit, also in .
-**TODO**: there are a lot of functions that I expected to return error codes, but didn't implement yet. What needs to be done, is figure out if those functions really need to return error codes, and consolidate error code handling, including nested calls. Also, some functions use 1 as success, while others use 0. This needs to be consolidated as well. In other words, error code handling should be a solid and uniform concept across the framework.
-**TODO**: consider init similar to strncpy? As of now it feels to me that it's cleaner to separate the concerns in multiple functions.
+  **TODO**: error codes need to be defined and checks implemented, e.g. array length exceeds limit, also in .
+  **TODO**: there are a lot of functions that I expected to return error codes, but didn't implement yet. What needs to be done, is figure out if those functions really need to return error codes, and consolidate error code handling, including nested calls. Also, some functions use 1 as success, while others use 0. This needs to be consolidated as well. In other words, error code handling should be a solid and uniform concept across the framework.
+  **TODO**: consider init similar to strncpy? As of now it feels to me that it's cleaner to separate the concerns in multiple functions.
 
 ### read function
 
@@ -184,34 +184,34 @@ typedef struct {
 } FoldersBlockAccessor;
 ```
 For Accessors, a structure with special fields and corresponding accessor functions is created, where each field is a pointer to the position of the corresponding field in the buffer. Provided this information, accessor functions can be generated that allow to operate on structures stored in buffer directly, without need to deserialize.
-Such operations, however, are limited to reads and in-place updates; for instance, adding or removing an element to an array would be impossible. 
+Such operations, however, are limited to reads and in-place updates; for instance, adding or removing an element to an array would be impossible.
 
 For each StructBuf structure the following functions will be generated:
 - main init function:
-    - `uint8_t sb_initStruct_Accessor(void** cursor, StructAccessor* accessor);`
-This function initializes an accessor from buffer.
+  - `uint8_t sb_initStruct_Accessor(void** cursor, StructAccessor* accessor);`
+    This function initializes an accessor from buffer.
 
 - for primitive type fields:
-    - `uint_type* sb_getStruct_field_Pointer(StructAccessor* accessor);`
-This function returns a pointer to field data in buffer. The return type used depends on the type of a given field.
+  - `uint_type* sb_getStruct_field_Pointer(StructAccessor* accessor);`
+    This function returns a pointer to field data in buffer. The return type used depends on the type of a given field.
 
 - for primitive type arrays:
-    - `uint_type sb_getStruct_field_ArrayLength(StructAccessor* accessor);`
-*ArrayLength()* function returns the length of a corresponding array *by value*. We intentionally don't return pointer to the corresponding length position in the buffer, because changing that value would have the meaning of resizing of the corresponding array and is not an operation that's supported in-place. The return type depends on maximum size of the corresponding array.
+  - `uint_type sb_getStruct_field_ArrayLength(StructAccessor* accessor);`
+    *ArrayLength()* function returns the length of a corresponding array *by value*. We intentionally don't return pointer to the corresponding length position in the buffer, because changing that value would have the meaning of resizing of the corresponding array and is not an operation that's supported in-place. The return type depends on maximum size of the corresponding array.
 
-    - `uint_type* sb_getStruct_field_ArrayPointer(StructAccessor* accessor);`
-*ArrayPointer()* function returns a pointer to array data in the buffer.The return type used depends on the type of a given field.
+  - `uint_type* sb_getStruct_field_ArrayPointer(StructAccessor* accessor);`
+    *ArrayPointer()* function returns a pointer to array data in the buffer.The return type used depends on the type of a given field.
 
 - for structure fields:
-    - `uint8_t sb_initStruct_field_Accessor(StructAccessor* parentAccessor, SubStructAccessor* accessorToInit);`
-This function takes a pointer to *SubStruct* Accessor to fill its pointer structure from the corresponding substructure in the buffer described by parent Accessor.
+  - `uint8_t sb_initStruct_field_Accessor(StructAccessor* parentAccessor, SubStructAccessor* accessorToInit);`
+    This function takes a pointer to *SubStruct* Accessor to fill its pointer structure from the corresponding substructure in the buffer described by parent Accessor.
 
 - for structure arrays:
-    - `uint_type sb_getStruct_field_ArrayLength(PhraseBlockAccessor* accessor);`
-*ArrayLength()* function returns the length of a corresponding array *by value*, similarly to primitive type arrays. The return type depends on maximum size of the corresponding array.
+  - `uint_type sb_getStruct_field_ArrayLength(PhraseBlockAccessor* accessor);`
+    *ArrayLength()* function returns the length of a corresponding array *by value*, similarly to primitive type arrays. The return type depends on maximum size of the corresponding array.
 
-    - `uint8_t sb_initStruct_field_AccessorArray(PhraseBlockAccessor* parentAccessor, StorePhraseHistoryAccessor* accessorArrayToInit, uint8_t length);`
-*init..AccessorArray()* function, similarly to single structure field initializer function, fills the fields of *SubStruct* Accessor structures, but it's doing it for an array of such Accessor objects.
+  - `uint8_t sb_initStruct_field_AccessorArray(PhraseBlockAccessor* parentAccessor, StorePhraseHistoryAccessor* accessorArrayToInit, uint8_t length);`
+    *init..AccessorArray()* function, similarly to single structure field initializer function, fills the fields of *SubStruct* Accessor structures, but it's doing it for an array of such Accessor objects.
 
 ## Command Line
 **TODO**: Instrumentalize StructBuf (cmd line tool)
@@ -228,10 +228,10 @@ The code can be found in **resources** folder (StreamUtils.cpp, StreamUtils.h).
 
 The idea of cursor is as follows.
 1. Let's say, a buffer is created, e.g. `void* buffer = malloc(4096);`
-  At this point `buffer` variable contains the address of the start of the block.
+   At this point `buffer` variable contains the address of the start of the block.
 2. The goal is to read a series of values from or write a series of values to the buffer sequentially, across different functions, while keeping track of current position to read next value from (or write to).
-For that purpose we transfer a pointer to a pointer, so when it's transferred across functions it factually updates the same value of the original pointer to our buffer. When such cursor is passed around, all functions have access to the same base pointer and can register the advancements related to read/write operations in a way visible to all other functions working on the same buffer.
-E.g.:
+   For that purpose we transfer a pointer to a pointer, so when it's transferred across functions it factually updates the same value of the original pointer to our buffer. When such cursor is passed around, all functions have access to the same base pointer and can register the advancements related to read/write operations in a way visible to all other functions working on the same buffer.
+   E.g.:
 ```
 void** cursor = &buffer;
 

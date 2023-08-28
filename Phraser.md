@@ -1,3 +1,5 @@
+# TODO: use protobuf
+
 Block structures for Phraser
 -----------------------------------------------------
 **Quick Facts**:
@@ -48,7 +50,7 @@ Sub-Structure: **Phrase**
 - max word name 256 bytes
 - minimum and maximum length is between 1 and 65'536 (probably restrict practical max to 2'048 or 1'024)
 - max 256 symbol sets per word
-  - symbol_sets only exist if (`generatable`==true)
+	- symbol_sets only exist if (`generatable`==true)
 ```
 |word_count|
 |    1     |
@@ -87,28 +89,28 @@ Sub-Structure: **Phrase**
 ......|   1   |     1     |  N |
 ```
 -----------------------------------------------------
-/* 
- *  Default templates, e.g.:
- *  
- *  Template - Simple
- *    - login
- *    - password
- *  
- *  Template - Website
- *    - url
- *    - login
- *    - password
- *  
- *  Template - Security Questions
- *    - security question 1
- *    - security answer 1
- *    - security question 2
- *    - security answer 2
- *    - security question 3
- *    - security answer 3
- *  
- *  Template - Trading
- *    - login
- *    - password
- *    - trading pin
- */
+/*
+*  Default templates, e.g.:
+*
+*  Template - Simple
+*    - login
+*    - password
+*
+*  Template - Website
+*    - url
+*    - login
+*    - password
+*
+*  Template - Security Questions
+*    - security question 1
+*    - security answer 1
+*    - security question 2
+*    - security answer 2
+*    - security question 3
+*    - security answer 3
+*
+*  Template - Trading
+*    - login
+*    - password
+*    - trading pin
+	   */

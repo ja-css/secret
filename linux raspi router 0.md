@@ -1,5 +1,6 @@
+
 This is a set of instructions to set up a WiFi-OpenVPN router based on Raspberry pi.
-Tested on Raspberry Pi 4 8gb, Raspberry Pi Zero W. 
+Tested on Raspberry Pi 4 8gb, Raspberry Pi Zero W.
 OS used:
 ```
 Raspberry Pi OS Lite
@@ -154,11 +155,11 @@ accept_mac_file=/etc/hostapd/accept
 
 `sudo nano /etc/default/hostapd`
 
-add line 
+add line
 `DAEMON_CONF="/etc/hostapd/hostapd.conf"`
 
 ### 2.3 `hostapd_cli`
-To get `hostapd_cli` to connect, in the hostapd.conf you need to specify 
+To get `hostapd_cli` to connect, in the hostapd.conf you need to specify
 the option 'ctrl_interface=<path to hostapd socket>'.
 e.g.:
 ```
@@ -189,7 +190,7 @@ Create a new config file:
 `sudo nano /etc/dnsmasq.conf`
 
 **UPDATE DNS ADDRESS!!!!**
-with the following lines: 
+with the following lines:
 ```
 interface=wlan0
   listen-address=::1,127.0.0.1,10.1.1.10
@@ -264,6 +265,7 @@ iptables -A OUTPUT -s 10.1.1.10 -d 10.1.1.0/24 -o wlan0 -p udp --dport 67:68 --s
 # iptables -A OUTPUT -s 192.168.1.10 -d 192.168.1.0/24 -o eth0 -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 #VPN
+# here eth0 might not be the right name, run `ip link show`
 #TODO: make VPN host the only allowed source and destination here
 #??? iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -s {VPN host} -i eth0 -p udp -j ACCEPT
@@ -313,7 +315,7 @@ Edit the config
 
 Save config to
 `/etc/openvpn/client.conf`
-Add 
+Add
 `auth-user-pass {PASSFILE}`
 
 run:

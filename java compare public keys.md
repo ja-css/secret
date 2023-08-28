@@ -1,8 +1,8 @@
 - Get public key from a certificate file
-`openssl x509 -pubkey -noout -in client-certificate.pem`
+  `openssl x509 -pubkey -noout -in client-certificate.pem`
 
 - Get public key from a client certificate (e.g. in SSL)
-`Base64.getEncoder().encodeToString(sslSession.getPeerCertificates()[0].getPublicKey().getEncoded())`
+  `Base64.getEncoder().encodeToString(sslSession.getPeerCertificates()[0].getPublicKey().getEncoded())`
 
 - Save certificate to a file
 ```
@@ -14,7 +14,7 @@ os.close();
 ```
 
 - encrypt with RSA test
-https://www.devglan.com/online-tools/rsa-encryption-decryption
+  https://www.devglan.com/online-tools/rsa-encryption-decryption
 
 RSA by itself is deterministic. However, to get a better security and prevent attackers from guessing the encrypted information, the encryption is done not on the pure "data" but on "data"+"some-random-pattern" ([wikipedia](http://en.wikipedia.org/wiki/RSA_%28algorithm%29#Padding_schemes))
 

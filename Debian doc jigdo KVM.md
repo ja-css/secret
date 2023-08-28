@@ -1,3 +1,6 @@
+# Attention!
+Stupid gnome on Debian does `Software` -> `Run software` for removable media like fucking windows 95.
+Go to Settings -> Removable media and disable that.
 
 **Preparation**
 [1. Debian with firmware (image)](#debian-with-firmware-image)
@@ -31,10 +34,7 @@ An image of Debian with firmware embedded is available:
     Non-free Firmware
     This is an  **official**  Debian image build and so only includes Free Software.
 
--> (**FIRMWARE DVD IS HERE**) https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware
-*) ISO: https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/11.6.0+nonfree/amd64/iso-dvd/
-*) TorrentC: https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/11.6.0+nonfree/amd64/bt-dvd/
-`apt install transmission transmission-cli`
+-> (**FIRMWARE DVD IS HERE**) https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/
 
 Theoretically you can try to find your firmware and create a flash drive with it, so that you can use an "official" installation disk, there are places like:
 https://github.com/wkennington/linux-firmware
@@ -44,6 +44,10 @@ Practically, however, I tried and failed to do it from my first couple of tries.
 So if you have no intention to learn this aspect in depth, just use the firmware disk.
 
 ## 2. Debian DVDs and jigdo
+### When downloading with jigdo, the first disk is for some reason not bootable. Might need to download the first DVD from a file mirror.
+### check DVD label :
+### apt install genisoimage
+### isoinfo -d -i file.iso | grep Volume id
 
 Only the first disk can be downloaded directly, additional disks are available via jigdo:
 #### 1. install jigdo:
@@ -66,23 +70,20 @@ from here: https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/
     Official images
         Official jigdo files for the  stable  release
 ```
--> (**THE LIST IS HERE**) https://cdimage.debian.org/debian-cd/current/amd64/jigdo-dvd/ 
+-> (**THE LIST IS HERE**) https://cdimage.debian.org/debian-cd/current/amd64/jigdo-dvd/
 
 #### 3. download using jigdo
 Run: `jigdo-lite debian-11.3.0-amd64-DVD-3.jigdo`
 Input the following parameters:
 `Files to scan:` - press Enter
 `...`
-`Debian mirror [http://ftp.us.debian.org/debian/]:` http://ftp.us.debian.org/debian/
+`Debian mirror [http://ftp.us.debian.org/debian/]:` - press Enter, or input http://ftp.us.debian.org/debian/
 
 more info here: https://www.debian.org/CD/jigdo-cd/#how
-
-#### 4. firmware disk
 
 ## 3. Checksums
 `openssl sha256 FILENAME`
 `openssl sha512 FILENAME`
-
 
 # Installation
 
@@ -96,11 +97,11 @@ But theoretically, it can be done in this way after installation:
 `# apt-cdrom add`
 
 OR UI : In Debian (gnome):
-Software 
--> 
-/// (button in the right top corner, 3 horizontal lines) 
--> 
-Software Repositories 
+Software
+->
+/// (button in the right top corner, 3 horizontal lines)
+->
+Software Repositories
 ->
 Other Software
 ->
@@ -117,10 +118,10 @@ Check the checkbox: "Never prompt or start programs on media insertion".
 ## 6. Add user to sudoers
 Apparently, the following 2 things need to be done:
 1) Added user john to sudo group:
-`sudo usermod -aG sudo john`
+   `sudo usermod -aG sudo john`
 
 2) Added the following line to /etc/sudoers
-`john    ALL=(ALL:ALL) ALL`
+   `john    ALL=(ALL:ALL) ALL`
 
 ## 7. Install OpenVPN
 https://wiki.debian.org/OpenVPN#Installation
@@ -141,7 +142,7 @@ $ sudo ip6tables -P FORWARD DROP
 ```
 
 2) General INPUT rule to allow ANY and ALL locally originating (as in, on the machine running iptables) traffic.
-DNS, HTTP, etc... all of it. Any connection initiated by the server running iptables should be allowed.
+   DNS, HTTP, etc... all of it. Any connection initiated by the server running iptables should be allowed.
 ```
 $ sudo iptables -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 ```
@@ -152,8 +153,8 @@ $ sudo iptables -A OUTPUT -p udp --dport {open_vpn_port} -d {open_vpn_ip_address
 ```
 
 4) Enable persistence for iptables
-EITHER install - `sudo apt install iptables-persistent`
-OR create file `/etc/rc.local`, with the following code
+   EITHER install - `sudo apt install iptables-persistent`
+   OR create file `/etc/rc.local`, with the following code
 ```
 #!/bin/bash
 sudo iptables-restore /etc/iptables/rules.v4
@@ -168,11 +169,11 @@ $ sudo ip6tables-save > /etc/iptables/rules.v6
 ```
 
 5) Change DNS settings
-First, change it in UI - connection settings, restart connection.
-Double-check `/etc/resolv.conf`. If the DNS settings didn't change there, try the following:
+   First, change it in UI - connection settings, restart connection.
+   Double-check `/etc/resolv.conf`. If the DNS settings didn't change there, try the following:
 - `/etc/resolv.conf`  is actually a symlink (`ls -l /etc/resolv.conf`) which points to  `/run/systemd/resolve/stub-resolv.conf`  (127.0.0.53) by default in Ubuntu 18.04.
 - Change the symlink to point to  `/run/systemd/resolve/resolv.conf`, which lists the real DNS servers:  
-    `sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf`
+  `sudo ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf`
 
 Google Public DNS
 - 8.8.8.8, 8.8.4.4
@@ -198,21 +199,21 @@ To determine user's *UID* by name, use the following command
 `id -u {username}`
 
 5) To see the rules on your system, you can use the following  `iptables`  command:
-`$ sudo iptables -L`
+   `$ sudo iptables -L`
 
 6) To delete a rule:
 - `sudo iptables -L --line-numbers` to show rule numbers for CHAINS
 - `sudo iptables -D INPUT 3` to delete rule by CHAIN and number
 
 7) To make iptables rules persistent after reboot:
-https://linuxconfig.org/how-to-make-iptables-rules-persistent-after-reboot-on-linux
+   https://linuxconfig.org/how-to-make-iptables-rules-persistent-after-reboot-on-linux
 - `sudo apt install iptables-persistent` - Install  `iptables-persistent`  package
 - Use  `iptables-save` and `ip6tables-save` to make rules persist after reboot
 ```
 $ sudo iptables-save > /etc/iptables/rules.v4
 $ sudo ip6tables-save > /etc/iptables/rules.v6
 ```
-- To restore saved iptables settings, use 
+- To restore saved iptables settings, use
 ```
 $ sudo iptables-restore /etc/iptables/rules.v4 
 $ sudo ip6tables-restore /etc/iptables/rules.v6
@@ -244,7 +245,7 @@ https://qemu-project.gitlab.io/qemu/system/images.html#snapshot-mode
 Add the following line to the VM command:
 `-usb -device usb-host,vendorid=0x1050,productid=0x0402`
 Benefits :
-- can unplug and replug USB device 
+- can unplug and replug USB device
 - will work if a device is not plugged in on VM start;
 - device will still work even if plugged and replugged to different USB ports;
 - multiple devices can be used at the same time;
@@ -287,8 +288,8 @@ Then run `speedtest`
 
 ## 13. Guest: set duckduckgo as default search engine
 Update Firefox from apt `sudo apt install firefox`
-In Firefox 
-- update search engine; 
+In Firefox
+- update search engine;
 - no proxy or custom proxy, don't use system proxy;
 - DNS over HTTPS if possible (1.1.1.1).
 
@@ -329,16 +330,16 @@ Background pinging, speed tests, statistical data collection.
 9. Mozilla settings - search etc.
 10. Remove /mnt (hardware)
 -
-11. set walpapers 
+11. set walpapers
 12.
 
 ## 18. Add a drive
-- find a drive 
-`sudo fdisk -l`
--  create a filesystem 
-`sudo mkfs -t ext4 /dev/sdb`
+- find a drive
+  `sudo fdisk -l`
+-  create a filesystem
+   `sudo mkfs -t ext4 /dev/sdb`
 - mount
-`mkdir /backup`
-`mount /dev/vdb /backup`
+  `mkdir /backup`
+  `mount /dev/vdb /backup`
 - give user permissions
-`chown john /backup`
+  `chown john /backup`

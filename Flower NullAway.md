@@ -58,7 +58,7 @@ If a parameter is uninitialized and is not explicitly marked as nullable, Flower
 Current implementation for EventFunctions' `@InFromFlow` mandates the parameter to be annotated as `@Nullable`. The idea is to handle the following situations:
 1) Flow state field is not initialized;
 2) Flow doesn't have a corresponding field.
-In both case a null/default value will be passed as a parameter.
+   In both case a null/default value will be passed as a parameter.
 
 
 
@@ -83,6 +83,6 @@ The problem statement here is that the structure should be concise and elegant, 
 1. `exception` is present, `returnValue` is not present - Exception was raised;
 2. `exception` is not present, `returnValue` is present - successful return from a non-Nullable function;
 3. `exception` is not present, `returnValue` is not present (null) - successful return of null value from a Nullable function or void function.
-At the same time, the structure should be compatible with regular NullAway, and expressible in Nullable and non-Nullable way, similarly to `InOutPrm` and `NullableInOutPrm`, to be further supported in Flower NullAway.
+   At the same time, the structure should be compatible with regular NullAway, and expressible in Nullable and non-Nullable way, similarly to `InOutPrm` and `NullableInOutPrm`, to be further supported in Flower NullAway.
 
 Before such solution is found, we will support the existing structure as always Nullable, despite small shortcomings in such approach.
