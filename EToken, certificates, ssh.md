@@ -1,5 +1,15 @@
 # EToken, certificates, ssh
 
+[0. Install debian](#install-debian)
+[1. Configure EasyRSA and create certificates (debian)](#configure-easyrsa-and-create-certificates-debian)
+[2. Install Safe Net Authentication client](#install-safe-net-authentication-client)
+[3. SSH Cert](#ssh-cert)
+[4. Connecting via SSH to AWS servers](#connecting-via-ssh-to-aws-servers)
+[5. Secure delete everything except for public keys](#secure-delete-everything-except-for-public-keys)
+[6. Create your own ssh server and add public key to ssh, prohibit login/password entry](#create-your-own-ssh-server-and-add-public-key-to-ssh-prohibit-loginpassword-entry)
+
+
+
 ## 0. Install debian
 
 - Use image without firmware
