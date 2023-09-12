@@ -21,7 +21,7 @@ SOCKS+:
 - Authentication: SOCKS+ uses certificate-based authentication on TLS layer.
 - IPv4 and IPv6 Support: SOCKS+ can work with both IPv4 and IPv6 addresses.
 - UDP Support: SOCKS+ can proxy UDP connections via `UDP ASSOCIATE`.
-- DNS Resolution: SOCKS+ can handle DNS resolution on the server side, eliminating the need for the client to perform DNS resolution locally.
+- DNS Resolution: SOCKS+ can handle DNS resolution on the server side, eliminating the need for the client to perform DNS resolution locally. 
 - Commands Support: SOCKS+ supports two commands: `CONNECT` (establishing a TCP connection) and `UDP ASSOCIATE`. Command `BIND` is not supported due to security concerns.
 
 ---
@@ -103,10 +103,10 @@ The implementation can be split into 2 parts:
 
 Should be good.
 
-# SOCKS5t and SOCKS+
+# SOCKS5s and SOCKS+
 
 Let's define the following terminology:
-SOCKS5t - Simply Socks5 over TLS with TLS certificate-based authentication.
+SOCKS5s - Simply Socks5 over TLS with TLS certificate-based authentication.
 SOCKS+ - next-gen protocol with connection multiplexing, based on SOCKS5, also featuring TLS and TLS certificate-based authentication.
 
 # Firewall and connection monitor
@@ -117,7 +117,7 @@ UI can be used locally or for debug/configuration purposes, while console versio
 
 # Empty chain
 With empty chain the server can run as a simple SOCKS4/5 proxy server, but I don't think it's any kind of secure.
-This feature can be useful for debugging though, to ensure the server works on its own.
+This feature can be useful for debugging though, to ensure the server works on its own. 
 Another usage would be to just use firewall/monitoring, without chaining.
 Probably we still can support it, while only allowing it with a special config flag, something like "allow insecure empty chain".
 
@@ -188,23 +188,23 @@ Message padding?
 
 ### In the end, we have the following functions
 - SOCKS4/5 server
-- SOCKS5t server
+- SOCKS5s server
 - SOCKS+ server
 - SOCKS chain client
     - SOCKS4/5 client
-    - SOCKS5t client
+    - SOCKS5s client
     - SOCKS+ client
 
 All these functions are encapsulated in our chain program.
 Therefore, from the same codebase the chain proxy can run as the following:
 - regular SOCKS4/5 proxy server
-- regular SOCKS5t proxy server
+- regular SOCKS5s proxy server
 - regular SOCKS+ proxy server
   if our chain is empty,
 
 and
 - SOCKS4/5 server -> chaining client
-- SOCKS5t server -> chaining client
+- SOCKS5s server -> chaining client
 - SOCKS+ server -> chaining client
   when we have a defined chain.
 

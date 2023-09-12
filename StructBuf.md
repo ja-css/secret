@@ -1,3 +1,5 @@
+## Not sure why I implemented this, should've used protobuf
+
 # StructBuf and StreamUtils
 
 **StructBuf** is a simple framework that performs C code generation for serialization of structures defined in a special language.

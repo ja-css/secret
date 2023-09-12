@@ -4,6 +4,7 @@ Go to Settings -> Removable media and disable that.
 
 **Preparation**
 [1. Debian with firmware (image)](#debian-with-firmware-image)
+[1.1 Avoiding non-free firmware](#avoiding-non-free-firmware)
 [2. Debian DVDs and jigdo](#debian-dvds-and-jigdo)
 [3. Checksums](#checksums)
 **Installation**
@@ -38,16 +39,20 @@ An image of Debian with firmware embedded is available:
 
 Theoretically you can try to find your firmware and create a flash drive with it, so that you can use an "official" installation disk, there are places like:
 https://github.com/wkennington/linux-firmware
-git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
+`git clone git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git`
 
 Practically, however, I tried and failed to do it from my first couple of tries.
 So if you have no intention to learn this aspect in depth, just use the firmware disk.
 
+### 1.1 Avoiding non-free firmware
+**Warning: since 12.1.0 official images also contain non-free firmware, but this can be overridden.**
+https://wiki.debian.org/Firmware#How_to_disable_detection_and_use_of_non-free_firmware
+
 ## 2. Debian DVDs and jigdo
-### When downloading with jigdo, the first disk is for some reason not bootable. Might need to download the first DVD from a file mirror.
-### check DVD label :
-### apt install genisoimage
-### isoinfo -d -i file.iso | grep Volume id
+#### When downloading with jigdo, the first disk is for some reason not bootable. Might need to download the first DVD from a file mirror.
+#### check DVD label:
+#### apt install genisoimage
+#### isoinfo -d -i file.iso | grep Volume id
 
 Only the first disk can be downloaded directly, additional disks are available via jigdo:
 #### 1. install jigdo:

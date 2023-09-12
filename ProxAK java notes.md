@@ -1,3 +1,11 @@
+#### Do we need a lightweight proxy server? In Rust?
+- TLS OVER TLS chaining u Ha java 3ae6eLLIbCR nucaTb, a Tbl roBopuLLIb Rust.
+* Ho Ha cepBepe HeT 4euHuHra, ToJIbKo Ha KJIueHTe!
+- TeM He MeHee, ynpaBJIeHue CepTuqpuKaTaMu y4uTb 3aHoBo Ha Rust Towe He Auc.
+- Tak ewe u PKCS#11, KoTopbIu HuKTo He CannopTuT!
+
+---
+
 The plan
 
 1. The process of creating certificates, client and server.

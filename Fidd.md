@@ -172,3 +172,24 @@ Below is the summary of files/objects that are not using standard end-to-end enc
 
 - *Bogus keys* supplied for all subscribers except for the intended recipient:
     - Objects with type `SUBSCRIBER_KEY_UPDATE`
+
+## P.S.
+
+If `Message`s are immutable, why not zip them?
+And for best obfuscation, encrypt zip.
+MessageId can be in Zip's name, or it can be 
+
+a. Common password
+Just zip file, it's a message. Common password for all messages.
+
+b. Variable password
+Computable password, based on MessageId and some common constant.
+
+c. Message in message
+A message with a zip file inside, which is an actual zipped message. Password per message.
+
+d. Common password for Message in message
+Zipped message with a zip file inside, which is an actual zipped message. Featuring a common password for all top level messages, and a password per internal message.
+
+e. Variable password for Message in message
+Same as c, but with calculable password.

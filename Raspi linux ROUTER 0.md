@@ -1,6 +1,6 @@
 
 This is a set of instructions to set up a WiFi-OpenVPN router based on Raspberry pi.
-Tested on Raspberry Pi 4 8gb, Raspberry Pi Zero W.
+Tested on Raspberry Pi 4 8gb, Raspberry Pi Zero W. 
 OS used:
 ```
 Raspberry Pi OS Lite
@@ -58,12 +58,14 @@ sudo apt-get purge bluez -y
 sudo apt-get purge libbluetooth3
 sudo apt-get autoremove -y
 ```
-disable avahi-daemon
+
+check that bluetooth is gone
+`dpkg -l | grep -i blue`
+
+#### Disable avahi-daemon
 ```
 sudo systemctl disable avahi-daemon
 ```
-check that bluetooth is gone
-`dpkg -l | grep -i blue`
 
 ## 1.2 OS update and apt-get software
 After installation, update OS:
@@ -93,12 +95,7 @@ iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A OUTPUT -j ACCEPT
 ```
 
-Optionally switch to a mirror (consider https mirrors):
-`sudo nano /etc/apt/sources.list`
-listed here: https://www.raspbian.org/RaspbianMirrors
-Also, to avoid the system falling back to http on archive.raspberrypi.org, set
-`127.0.0.1 archive.raspberrypi.org` in /etc/hosts
-
+Optionally use a mirror or offline install: see `Raspi Linux ROUTER alternative update`
 Then it's safer to
 `sudo apt-get update`
 
@@ -155,11 +152,11 @@ accept_mac_file=/etc/hostapd/accept
 
 `sudo nano /etc/default/hostapd`
 
-add line
+add line 
 `DAEMON_CONF="/etc/hostapd/hostapd.conf"`
 
 ### 2.3 `hostapd_cli`
-To get `hostapd_cli` to connect, in the hostapd.conf you need to specify
+To get `hostapd_cli` to connect, in the hostapd.conf you need to specify 
 the option 'ctrl_interface=<path to hostapd socket>'.
 e.g.:
 ```
@@ -190,7 +187,7 @@ Create a new config file:
 `sudo nano /etc/dnsmasq.conf`
 
 **UPDATE DNS ADDRESS!!!!**
-with the following lines:
+with the following lines: 
 ```
 interface=wlan0
   listen-address=::1,127.0.0.1,10.1.1.10
@@ -315,7 +312,7 @@ Edit the config
 
 Save config to
 `/etc/openvpn/client.conf`
-Add
+Add 
 `auth-user-pass {PASSFILE}`
 
 run:

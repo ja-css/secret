@@ -92,11 +92,11 @@ OpenVPN can run either on TCP or UDP.
 
 1. P_CONTROL message format:
    Local session_id
-   random 64 bit value to identify TLS session
+     random 64 bit value to identify TLS session
    HMAC signature of entire encapsulation header for integrity check
-   Valid only if --tls-auth is specified (usually 16 or 20 bytes).
+     Valid only if --tls-auth is specified (usually 16 or 20 bytes).
    Packet-id for replay protection
-   4 or 8 bytes, includes sequence number and optional time_t timestamp
+     4 or 8 bytes, includes sequence number and optional time_t timestamp
    P_ACK packet_id array length (1 byte)
    P_ACK packet-id array (if length > 0)
    P_ACK remote session_id (if length > 0)
@@ -107,36 +107,36 @@ OpenVPN can run either on TCP or UDP.
 Once the TLS session has been initialized and authenticated, the TLS channel is used to exchange random key material for the bidirectional cipher and HMAC keys which will be used to secure the actual tunneled data packets. OpenVPN currently implements two key methods. Key method 1 directly derives keys using random bits obtained from the RAND_bytes OpenSSL function. Key method 2 mixes random key material from both sides of the connection using the TLS PRF mixing function. Key method 2 is the preferred method and is the default for OpenVPN 2.0.
 
 TLS plaintext packet content:
-if key_method == 1
-Cipher key length in bytes (1 byte).
-Cipher key (n bytes).
-HMAC key length in bytes (1 byte).
-HMAC key (n bytes).
-Options string (n bytes, null terminated, client/server options string should match).
-if key_method == 2
-Literal 0 (4 bytes).
-key_method type (1 byte).
-key_source structure (pre_master only defined for client ->server).
-options_string_length, including null (2 bytes).
-Options string (n bytes, null terminated, client/server options string must match).
-[The username/password data below is optional, record can end at this point.]
-username_string_length, including null (2 bytes).
-Username string (n bytes, null terminated).
-password_string_length, including null (2 bytes).
-Password string (n bytes, null terminated).
+  if key_method == 1
+     Cipher key length in bytes (1 byte).
+     Cipher key (n bytes).
+     HMAC key length in bytes (1 byte).
+     HMAC key (n bytes).
+     Options string (n bytes, null terminated, client/server options string should match).
+  if key_method == 2
+     Literal 0 (4 bytes).
+     key_method type (1 byte).
+     key_source structure (pre_master only defined for client ->server).
+     options_string_length, including null (2 bytes).
+     Options string (n bytes, null terminated, client/server options string must match).
+     [The username/password data below is optional, record can end at this point.]
+     username_string_length, including null (2 bytes).
+     Username string (n bytes, null terminated).
+     password_string_length, including null (2 bytes).
+     Password string (n bytes, null terminated).
 2. P_DATA message content:
-   HMAC of ciphertext IV + ciphertext (if not disabled by --auth none).
-   Ciphertext IV (size is cipher-dependent, if not disabled by --no-iv).
-   Tunnel packet ciphertext.
+     HMAC of ciphertext IV + ciphertext (if not disabled by --auth none).
+     Ciphertext IV (size is cipher-dependent, if not disabled by --no-iv).
+     Tunnel packet ciphertext.
 
 
-P_DATA plaintext:
-Packet_id (4 or 8 bytes, if not disabled by --no-replay).
-a. In SSL/TLS mode, 4 bytes are used because the implementation can force a TLS
-renegotation before 2^32 packets are sent.
-b. In pre-shared key mode, 8 bytes are used (sequence number and time_t value) to
-allow long-term key usage without packet_id collisions.
-User plaintext (n bytes).
+   P_DATA plaintext:
+     Packet_id (4 or 8 bytes, if not disabled by --no-replay).
+       a. In SSL/TLS mode, 4 bytes are used because the implementation can force a TLS
+          renegotation before 2^32 packets are sent.
+       b. In pre-shared key mode, 8 bytes are used (sequence number and time_t value) to
+          allow long-term key usage without packet_id collisions.
+     User plaintext (n bytes).
 
 
 **Notes:**

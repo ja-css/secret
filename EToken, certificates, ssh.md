@@ -17,6 +17,7 @@
 
 ## 1. Configure EasyRSA and create certificates (debian)
 
+Memo: EasyRSA doesn't support root certificate on PKCS#11 token, for that reason we need to maintain our certificate store on a very well encrypted machine. MB: contribute to code?
 Quote:
 https://docs.bigchaindb.com/projects/server/en/v1.3.0/production-deployment-template/client-tls-certificate.html
 

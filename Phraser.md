@@ -89,28 +89,28 @@ Sub-Structure: **Phrase**
 ......|   1   |     1     |  N |
 ```
 -----------------------------------------------------
-/*
-*  Default templates, e.g.:
-*
-*  Template - Simple
-*    - login
-*    - password
-*
-*  Template - Website
-*    - url
-*    - login
-*    - password
-*
-*  Template - Security Questions
-*    - security question 1
-*    - security answer 1
-*    - security question 2
-*    - security answer 2
-*    - security question 3
-*    - security answer 3
-*
-*  Template - Trading
-*    - login
-*    - password
-*    - trading pin
-	   */
+/* 
+ *  Default templates, e.g.:
+ *  
+ *  Template - Simple
+ *    - login
+ *    - password
+ *  
+ *  Template - Website
+ *    - url
+ *    - login
+ *    - password
+ *  
+ *  Template - Security Questions
+ *    - security question 1
+ *    - security answer 1
+ *    - security question 2
+ *    - security answer 2
+ *    - security question 3
+ *    - security answer 3
+ *  
+ *  Template - Trading
+ *    - login
+ *    - password
+ *    - trading pin
+ */

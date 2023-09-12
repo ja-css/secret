@@ -12,10 +12,10 @@ exchange:
 final byte versionVal = in.getByte(readerIndex);
 
 case SOCKS5:
-logKnownVersion(ctx, version);
-p.addAfter(ctx.name(), null, socks5encoder);
-p.addAfter(ctx.name(), null, new Socks5InitialRequestDecoder());
-break;
+	logKnownVersion(ctx, version);
+	p.addAfter(ctx.name(), null, socks5encoder);
+	p.addAfter(ctx.name(), null, new Socks5InitialRequestDecoder());
+	break;
 
 1 - client is sending Socks5InitialRequest
 1 - server decodes DefaultSocks5InitialRequest via Socks5InitialRequestDecoder

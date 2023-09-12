@@ -1,4 +1,7 @@
-Also Windows To Go Img to flash with dd.
+Try alternative: https://www.kali.org/docs/arm/raspberry-pi-with-luks-full-disk-encryption-2/
+Kali ^ has LUKS NUKE.
+The above tutorial also has LUKS automation.
+
 
 # LUKS-on-Raspberry-Pi
 https://rr-developer.github.io/LUKS-on-Raspberry-Pi/
@@ -201,10 +204,15 @@ initramfs initramfs.gz followkernel
 
 **File: /boot/cmdline.txt**
 
-It contains one line with parameters. One of them is ‘root’, that specifies the location of the root partition. For Raspberry Pi is usually ‘/dev/mmcblk0p2’, but it can also be other device (or the same) specified as “PARTUUID=xxxxx”. The value of ‘root’ has to be change to ‘/dev/mapper/sdcard’. For example, if ‘root’ is:
+It contains one line with parameters. One of them is ‘root’, that specifies the location of the root partition. For Raspberry Pi is usually ‘/dev/mmcblk0p2’, but it can also be other device (or the same) specified as “PARTUUID=xxxxx”. *In this case we still use "/dev/mmcblk0p2" regardless.*
+The value of ‘root’ has to be change to ‘/dev/mapper/sdcard’. For example, if ‘root’ is:
 
 ```
 root=/dev/mmcblk0p2
+```
+OR
+```
+root=PARTUUID=xxxxx
 ```
 
 it should be changed to:
@@ -218,6 +226,7 @@ also, at the end of the line, separated by a space, this text should be appended
 ```
 cryptdevice=/dev/mmcblk0p2:sdcard
 ```
+*Here ^ don't append `cryptdevice=PARTUUID=xxxxx:sdcard`, use `/dev/mmcblk0p2`, and so forth*
 
 **File: /etc/fstab**
 
@@ -242,6 +251,11 @@ sdcard	/dev/mmcblk0p2	none	luks
 ```
 
 Everything is ready now to reboot. After rebooting, Raspberry Pi OS will fail to start because we have configured a root partition that does not exist yet. After several equal messages indicating the failure, the ‘initramfs’ shell will show.
+
+---
+# REBOOT HERE
+---
+
 
 ### Encrypting the root partition
 
@@ -297,9 +311,37 @@ time dd bs=4k count=XXXXX if=/dev/sda | sha1sum
 
 Assuming that the checksums are correct, now it is time to encrypt the root filesystem of the SD Card, to create the LUKS volume using ‘cryptsetup’. There are many parameters and possible values for the encryption. This is the command I have chosen:
 
+---
+# REPLACE WITH AES HERE
+---
+
 ```
-cryptsetup --type luks2 --cipher xchacha20,aes-adiantum-plain64 --hash sha256 --iter-time 5000 –keysize 256 --pbkdf argon2i luksFormat /dev/mmcblk0p2
+OLD / ORIGINAL
+cryptsetup --type luks2 --cipher xchacha20,aes-adiantum-plain64 --hash sha256 --iter-time 5000 -keysize 256 --pbkdf argon2i luksFormat /dev/mmcblk0p2
 ```
+
+```
+NEW - no redundant confusing --hash, use aes-xts cipher, 
+NEW - keysize is now 512, --keysize fixed (-- instead of -)
+cryptsetup --type luks2 --cipher aes-xts --iter-time 5000 --keysize 512 --pbkdf argon2i luksFormat /dev/mmcblk0p2
+```
+
+- `luksFormat` is a verb, like `luksOpen`, `luksClose`, `luksDump`, etc.
+I.e. do LUKS Format.
+
+- `--iter-time` - how much time should take in ms
+also can use `--iter-count` - how many iterations to use
+
+- pbkdf types available: (try `man cryptsetup` for full list)
+legacy: pbkdf2, pkcs5_pbkdf1, bcrypt
+modern: argon2i, scrypt
+recommended: **argon2i**
+
+- **Not sure why he's specifying both `--hash` and `--pbkdf`.**
+Context:
+When both the `--hash` and `--pbkdf` options are specified in the `cryptsetup` command, the `--pbkdf` option takes precedence. This means that the PBKDF algorithm specified with `--pbkdf` determines the entire key derivation process, including the hash function used.
+
+---
 
 More information about the parameters can be found here:  [https://man7.org/linux/man-pages/man8/cryptsetup.8.html](https://man7.org/linux/man-pages/man8/cryptsetup.8.html)
 
