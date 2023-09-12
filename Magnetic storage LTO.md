@@ -1,4 +1,6 @@
+
 ---
+
 Linear Tape File System
 
 The  **Linear Tape File System**  (**LTFS**) is a  [file system](https://en.wikipedia.org/wiki/File_system "File system")  that allows files stored on  [magnetic tape](https://en.wikipedia.org/wiki/Magnetic_tape_data_storage "Magnetic tape data storage")  to be accessed in a similar fashion to those on disk or removable flash drives. It requires both a specific format of data on the tape media and software to provide a file system interface to the data.
