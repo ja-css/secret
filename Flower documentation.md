@@ -1,23 +1,31 @@
+TODO: Multi-parent is needed.<br>
+Example: 
+1. REST API call triggers a Flow Instance #1.
+2. Flow instance #1 sends a message to a queue
+3. Queue reader, which is also a Flow Instance (#2), reads the message from the queue and creates child Flow Instance (#3).
+4. Thus, Flow Instance #3 has 2 parents: #2 and #1.
+
+Flow Instance #2 physically created Flow Instance #3 based on the message from the queue.<br>
+Flow Instance #1 is a logical parent, which knows the full context of the creation.<br>
+Both parents are important to understand end-to-end processing picture for the Flow Instance #3.<br>
+It's best to be able to reflect both parents, to have a full processing picture and what was called by what.<br> 
+
 Flower
 ========
-**TODO: Confluence understands markdown, Flower docs can be moved there**
-https://csscompany.atlassian.net/wiki/spaces/BE/pages/1920532506/Flower+WIP
-
-usage: DomainApiCallInvoker
 
 Flower is a lightweight workflow engine.
 
-[Introduction](#introduction)
-[Example: "Hello world" flow](#example-1-hello-world-flow)
-[Example: Initializing Flower and running an instance of "Hello world" flow](#example-2-initializing-flower-and-running-an-instance-of-hello-world-flow)
-[Flows and Steps](#flows-and-steps)
-[Step Function and Transit Function](#step-function-and-transit-function)
-[Flow and Function names](#flow-and-function-names)
-[Flow State](#flow-state)
-[Functions and parameters](#functions-and-parameters)
-[Parameter passing: defaults](#parameter-passing-defaults)
-[Reusing Transit Functions](#reusing-transit-functions)
-[Global Functions and Global Function Calls](#global-functions-and-global-function-calls)
+[Introduction](#introduction)<br>
+[Example: "Hello world" flow](#example-1-hello-world-flow)<br>
+[Example: Initializing Flower and running an instance of "Hello world" flow](#example-2-initializing-flower-and-running-an-instance-of-hello-world-flow)<br>
+[Flows and Steps](#flows-and-steps)<br>
+[Step Function and Transit Function](#step-function-and-transit-function)<br>
+[Flow and Function names](#flow-and-function-names)<br>
+[Flow State](#flow-state)<br>
+[Functions and parameters](#functions-and-parameters)<br>
+[Parameter passing: defaults](#parameter-passing-defaults)<br>
+[Reusing Transit Functions](#reusing-transit-functions)<br>
+[Global Functions and Global Function Calls](#global-functions-and-global-function-calls)<br>
 
 
 ## Introduction
