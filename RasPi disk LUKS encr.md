@@ -175,6 +175,12 @@ sha256
 nhpoly1305  
 dm-crypt  
 ```  
+
+also, for AES-XTS support
+```
+xts
+aes_generic
+```
   
 Now we need to build the new ‘initramfs’:  
   
@@ -317,21 +323,23 @@ time dd bs=4k count=XXXXX if=/dev/sda | sha1sum
   
 Assuming that the checksums are correct, now it is time to encrypt the root filesystem of the SD Card, to create the LUKS volume using ‘cryptsetup’. There are many parameters and possible values for the encryption. This is the command I have chosen:  
   
----  
-# REPLACE WITH AES HERE  
+---
+# USE AES
 ---  
   
+```  
+NEW - no redundant confusing --hash, use aes-cbc-essiv:sha256 cipher,   
+NEW - keysize is now 512, `keysize` flag fixed
+cryptsetup --type luks2 --cipher aes-cbc-essiv:sha256 --iter-time 5000 --key-size 512 --pbkdf argon2i luksFormat /dev/mmcblk0p2  
+```  
+
+### DON'T USE THIS, UNLESS YOU WANT ADIANTUM INSTEAD OF AES
 ```  
 OLD / ORIGINAL  
 cryptsetup --type luks2 --cipher xchacha20,aes-adiantum-plain64 --hash sha256 --iter-time 5000 -keysize 256 --pbkdf argon2i luksFormat /dev/mmcblk0p2  
 ```  
-  
-```  
-NEW - no redundant confusing --hash, use aes-xts cipher,   
-NEW - keysize is now 512, --keysize fixed (-- instead of -)  
-cryptsetup --type luks2 --cipher aes-xts --iter-time 5000 --keysize 512 --pbkdf argon2i luksFormat /dev/mmcblk0p2  
-```  
-  
+
+
 - `luksFormat` is a verb, like `luksOpen`, `luksClose`, `luksDump`, etc.  
 I.e. do LUKS Format.  
   
@@ -369,7 +377,7 @@ After copied, we have to calculate the checksum of the copy once more to validat
 time dd bs=4k count=XXXXX if=/dev/mapper/sdcard | sha1sum  
 ```  
   
-In addition to the checksum check, we check the the filesystem of the LUKS volume:  
+In addition to the checksum check, we check the filesystem of the LUKS volume:  
   
 ```  
 e2fsck -f /dev/mapper/sdcard  
