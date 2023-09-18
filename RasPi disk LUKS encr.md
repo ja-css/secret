@@ -29,25 +29,25 @@ Full disk encryption is quite easy to perform with modern Linux distributions. R
 Linux kernel 5.0 or later. You can check it with this command:  
   
 ```  
-uname -s -r  
+uname -s -r
 ```  
   
 cryptsetup 2.0.6 or later. You can check it with this command:  
   
 ```  
-cryptsetup --version  
+cryptsetup --version
 ```  
   
 You should install the programs needed:  
   
 ```  
-sudo apt install busybox cryptsetup initramfs-tools  
+sudo apt install busybox cryptsetup initramfs-tools
 ```  
   
 The microprocessors of Raspberry Pi computers do not include AES acceleration. That means that a software implementation of AES is needed, which is slow with modest hardware. Fortunately, there is a recent alternative, Adiantum, that runs fast in software. Linux kernel 5.0 or later includes the cryptographic kernel modules needed for Adiantum. You can check that every module is present and loaded with this command:  
   
 ```  
-cryptsetup benchmark -c xchacha20,aes-adiantum-plain64  
+cryptsetup benchmark -c xchacha20,aes-adiantum-plain64
 ```  
   
 The output, if everything is all right, will be like this:  
@@ -81,111 +81,105 @@ aes-xts        256b        88.7 MiB/s        86.2 MiB/s
 ‘initramfs’ has to be recreated when a new kernel is installed or just now that we have to change its configuration. We need to create a new file:  
   
 ```  
-/etc/kernel/postinst.d/initramfs-rebuild  
+/etc/kernel/postinst.d/initramfs-rebuild
 ```  
   
 and it should have this content:  
   
 ```  
-#!/bin/sh -e  
-  
-# Rebuild initramfs.gz after kernel upgrade to include new kernel's modules.  
-# https://github.com/Robpol86/robpol86.com/blob/master/docs/_static/initramfs-rebuild.sh  
-# Save as (chmod +x): /etc/kernel/postinst.d/initramfs-rebuild  
-  
-# Remove splash from cmdline.  
-if grep -q '\bsplash\b' /boot/cmdline.txt; then  
-  sed -i 's/ \?splash \?/ /' /boot/cmdline.txt  
-fi  
-  
-# Exit if not building kernel for this Raspberry Pi's hardware version.  
-version="$1"  
-current_version="$(uname -r)"  
-case "${current_version}" in  
-  *-v7+)  
-    case "${version}" in  
-      *-v7+) ;;  
-      *) exit 0  
-    esac  
-  ;;  
-  *+)  
-    case "${version}" in  
-      *-v7+) exit 0 ;;  
-    esac  
-  ;;  
-esac  
-  
-# Exit if rebuild cannot be performed or not needed.  
-[ -x /usr/sbin/mkinitramfs ] || exit 0  
-[ -f /boot/initramfs.gz ] || exit 0  
-lsinitramfs /boot/initramfs.gz |grep -q "/$version$" && exit 0  # Already in initramfs.  
-  
-# Rebuild.  
-mkinitramfs -o /boot/initramfs.gz "$version"  
-```  
+#!/bin/sh -e
+
+# Rebuild initramfs.gz after kernel upgrade to include new kernel's modules.
+# https://github.com/Robpol86/robpol86.com/blob/master/docs/_static/initramfs-rebuild.sh
+# Save as (chmod +x): /etc/kernel/postinst.d/initramfs-rebuild
+
+# Remove splash from cmdline.
+if grep -q '\bsplash\b' /boot/cmdline.txt; then
+  sed -i 's/ \?splash \?/ /' /boot/cmdline.txt
+fi
+
+# Exit if not building kernel for this Raspberry Pi's hardware version.
+version="$1"
+current_version="$(uname -r)"
+case "${current_version}" in
+  *-v7+)
+    case "${version}" in
+      *-v7+) ;;
+      *) exit 0
+    esac
+  ;;
+  *+)
+    case "${version}" in
+      *-v7+) exit 0 ;;
+    esac
+  ;;
+esac
+
+# Exit if rebuild cannot be performed or not needed.
+[ -x /usr/sbin/mkinitramfs ] || exit 0
+[ -f /boot/initramfs.gz ] || exit 0
+lsinitramfs /boot/initramfs.gz |grep -q "/$version$" && exit 0  # Already in initramfs.
+
+# Rebuild.
+mkinitramfs -o /boot/initramfs.gz "$version"
+```
   
 The file should be made executable:  
   
 ```  
-sudo chmod +x /etc/kernel/postinst.d/initramfs-rebuild  
+sudo chmod +x /etc/kernel/postinst.d/initramfs-rebuild
 ```  
   
 We also need to specify some programs that need to be included in ‘initramfs’. We do that with a new file at:  
   
 ```  
-/etc/initramfs-tools/hooks/luks_hooks  
+/etc/initramfs-tools/hooks/luks_hooks
 ```  
   
 and it should have this content:  
   
 ```  
-#!/bin/sh -e  
-PREREQS=""  
-case $1 in  
-        prereqs) echo "${PREREQS}"; exit 0;;  
-esac  
-  
-. /usr/share/initramfs-tools/hook-functions  
-  
-copy_exec /sbin/resize2fs /sbin  
-copy_exec /sbin/fdisk /sbin  
-copy_exec /sbin/cryptsetup /sbin  
+#!/bin/sh -e
+PREREQS=""
+case $1 in
+        prereqs) echo "${PREREQS}"; exit 0;;
+esac
+
+. /usr/share/initramfs-tools/hook-functions
+
+copy_exec /sbin/resize2fs /sbin
+copy_exec /sbin/fdisk /sbin
+copy_exec /sbin/cryptsetup /sbin
 ```  
   
 The programs are ‘resize2fs’, ‘fdisk’ and ‘cryptsetup’. The file should be made executable:  
   
 ```  
-sudo chmod +x /etc/initramfs-tools/hooks/luks_hooks  
+sudo chmod +x /etc/initramfs-tools/hooks/luks_hooks
 ```  
   
 ‘initramfs’ for Raspberry Pi OS does not include kernel modules for LUKS and encryption by default. We need to configure the kernel modules to add. This file has to be edited:  
   
 ```  
-/etc/initramfs-tools/modules  
+/etc/initramfs-tools/modules
 ```  
   
 and the following lines with the names of kernel modules added:  
   
 ```  
-algif_skcipher  
-xchacha20  
-adiantum  
-aes_arm  
-sha256  
-nhpoly1305  
-dm-crypt  
+algif_skcipher
+xchacha20
+adiantum
+aes_arm
+sha256
+nhpoly1305
+dm-crypt
 ```  
-
-also, for AES-XTS support
-```
-xts
-aes_generic
-```
   
 Now we need to build the new ‘initramfs’:  
   
 ```  
-sudo -E CRYPTSETUP=y mkinitramfs -o /boot/initramfs.gz  
+sudo -E CRYPTSETUP=y mkinitramfs -o /boot/initramfs.gz
 ```  
   
 You can ignore the warning about ‘cryptsetup’ if the next checking is correct.  
@@ -193,13 +187,13 @@ You can ignore the warning about ‘cryptsetup’ if the next checking is correc
 We can check that the programs are present in ‘initramfs’ with the following command:  
   
 ```  
-lsinitramfs /boot/initramfs.gz | grep -P "sbin/(cryptsetup|resize2fs|fdisk)"  
+lsinitramfs /boot/initramfs.gz | grep -P "sbin/(cryptsetup|resize2fs|fdisk)"
 ```  
   
 We can check that the kernel modules are present in ‘initramfs’ with the following command:  
   
 ```  
-lsinitramfs /boot/initramfs.gz | grep -P "(algif_skcipher|chacha|adiantum|aes-arm|sha256|nhpoly1305|dm-crypt)"  
+lsinitramfs /boot/initramfs.gz | grep -P "(algif_skcipher|chacha|adiantum|aes-arm|sha256|nhpoly1305|dm-crypt)"
 ```  
   
 ### Preparing Boot  
@@ -211,7 +205,7 @@ We need to modify some files before rebooting the Rasperry Pi. These changes are
 The next line has to be appended at the end of the file:  
   
 ```  
-initramfs initramfs.gz followkernel  
+initramfs initramfs.gz followkernel
 ```  
   
 **File: /boot/cmdline.txt**  
@@ -219,25 +213,22 @@ initramfs initramfs.gz followkernel
 It contains one line with parameters. One of them is ‘root’, that specifies the location of the root partition. For Raspberry Pi is usually ‘/dev/mmcblk0p2’, but it can also be other device (or the same) specified as “PARTUUID=xxxxx”. *In this case we still use "/dev/mmcblk0p2" regardless.*  
 The value of ‘root’ has to be change to ‘/dev/mapper/sdcard’. For example, if ‘root’ is:  
   
-```  
-root=/dev/mmcblk0p2  
+``` 
+CHANGE THIS 
+    root=/dev/mmcblk0p2
 ```  
 OR  
 ```  
-root=PARTUUID=xxxxx  
+CHANGE THIS 
+    root=PARTUUID=xxxxx  
 ```  
   
 it should be changed to:  
   
 ```  
-root=/dev/mapper/sdcard  
+root=/dev/mapper/sdcard cryptdevice=/dev/mmcblk0p2:sdcard
 ```  
   
-also, at the end of the line, separated by a space, this text should be appended:  
-  
-```  
-cryptdevice=/dev/mmcblk0p2:sdcard  
-```  
 *Here ^ don't append `cryptdevice=PARTUUID=xxxxx:sdcard`, use `/dev/mmcblk0p2`, and so forth*  
   
 **File: /etc/fstab**  
@@ -245,21 +236,22 @@ cryptdevice=/dev/mmcblk0p2:sdcard
 The device for root partition (‘/’) should be changed to the mapper. For example, if the device for root is:  
   
 ```  
-/dev/mmcblk0p2  
+CHANGE THIS 
+    /dev/mmcblk0p2
 ```  
   
 it should be changed to:  
   
 ```  
-/dev/mapper/sdcard  
+/dev/mapper/sdcard
 ```  
   
-**File: etc/crypttab**  
+**File: /etc/crypttab**  
   
 At the end of the file a new line should be appended with the next content:  
   
 ```  
-sdcard	/dev/mmcblk0p2	none	luks  
+sdcard	/dev/mmcblk0p2	none	luks
 ```  
   
 Everything is ready now to reboot. After rebooting, Raspberry Pi OS will fail to start because we have configured a root partition that does not exist yet. After several equal messages indicating the failure, the ‘initramfs’ shell will show.  
@@ -274,7 +266,7 @@ Everything is ready now to reboot. After rebooting, Raspberry Pi OS will fail to
 In the ‘initramfs’ shell, we can check that we can use ‘cryptsetup’ with the kernel module ciphers:  
   
 ```  
-cryptsetup benchmark -c xchacha20,aes-adiantum-plain64  
+cryptsetup benchmark -c xchacha20,aes-adiantum-plain64
 ```  
   
 If the test is completed, everything is all right. Now we have to copy the root partition of the SD Card to the USB memory. The idea is to have a copy of the root partition of the SD Card in the USB memory, create an encrypted volume in the root partition (the content will be lost) and copy the root partition in the USB memory back to the encrypted partition of the SD Card. Take into account that the previous content of the USB memory will be lost. Before doing that, we are going to check the root partition and reduce the size of its filesystem to the minimum possible, so that the copy operation takes less time. The command to check it and correct possible errors is:  
