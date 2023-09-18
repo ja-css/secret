@@ -307,3 +307,5 @@ Save it and run at the command line with
 You should see the following, indicating digital i/o, I2C and SPI all worked  
   
 [![sensors_test.png](https://cdn-learn.adafruit.com/assets/assets/000/076/487/medium800/sensors_test.png?1559681480)](https://learn.adafruit.com/assets/76487)
+
+[![sensors_test.png](https://howtoraspberrypi.com/wp-content/uploads/2019/09/connection-serie-pi.jpg)

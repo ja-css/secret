@@ -10,7 +10,10 @@ https://packages.debian.org/sid/cryptsetup-nuke-password
   
   
 # LUKS-on-Raspberry-Pi  
-https://rr-developer.github.io/LUKS-on-Raspberry-Pi/  
+Original: https://rr-developer.github.io/LUKS-on-Raspberry-Pi/  
+
+**N.B. I tested this, and it worked on 4b, 3a, Zero W.  
+Unfortunately, the same SD card can't be used on all 3, installations are hardware-specific.** 
   
 ## Guide to perform a full disk encryption of the SD Card of a Raspberry Pi running Raspberry Pi OS  
   
@@ -320,15 +323,15 @@ Assuming that the checksums are correct, now it is time to encrypt the root file
 ---  
   
 ```  
-NEW - no redundant confusing --hash, use aes-cbc-essiv:sha256 cipher,   
-NEW - keysize is now 512, `keysize` flag fixed
-cryptsetup --type luks2 --cipher aes-cbc-essiv:sha256 --iter-time 5000 --key-size 512 --pbkdf argon2i luksFormat /dev/mmcblk0p2  
+AES
+cryptsetup --type luks2 --cipher aes-cbc-essiv:sha256 --iter-time 5000 --key-size 256 --pbkdf argon2i luksFormat /dev/mmcblk0p2  
 ```  
+TODO: test keysize 512
 
 ### DON'T USE THIS, UNLESS YOU WANT ADIANTUM INSTEAD OF AES
 ```  
-OLD / ORIGINAL  
-cryptsetup --type luks2 --cipher xchacha20,aes-adiantum-plain64 --hash sha256 --iter-time 5000 -keysize 256 --pbkdf argon2i luksFormat /dev/mmcblk0p2  
+ADIANTUM (OLD / ORIGINAL)  
+cryptsetup --type luks2 --cipher xchacha20,aes-adiantum-plain64 --hash sha256 --iter-time 5000 --key-size 256 --pbkdf argon2i luksFormat /dev/mmcblk0p2  
 ```  
 
 
