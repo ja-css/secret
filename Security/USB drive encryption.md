@@ -1,3 +1,5 @@
+#### See also, [RasPi disk LUKS encr.md](..%2FRaspberryPi%2FRasPi%20disk%20LUKS%20encr.md)
+
 Below stuff didn't work for me.  
 Easy mode - got to Disks,   
 choose settings for the drive,  
