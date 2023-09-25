@@ -85,8 +85,7 @@ P.S. Looks like `pkcs11-tool` already has something of the sort here, need to ma
    `{ "usage-derive",	0, NULL,		OPT_KEY_USAGE_DERIVE },`  
    `{ "usage-wrap",	0, NULL,		OPT_KEY_USAGE_WRAP },`  
 added on Feb 1, 2020, commit: https://github.com/OpenSC/OpenSC/commit/0cd19b59e19a7129f4064fcb94e0e39615ec0cdc  
-On Linux the options exist, but they don't seem to set attributes as expected. Need to debug and fix the code, potentially compare with `pkcs11-tools`.
-
+On Linux the options exist, but they don't seem to set attributes as expected. Need to debug and fix the code, potentially compare with `pkcs11-tools`. (here: https://github.com/Mastercard/pkcs11-tools/blob/master/lib/pkcs11_pubk.c#L1022-L1046)  
 
 ### Mac  
 https://www.certsign.ro/en/support/safenet-installing-the-device-on-macos/  
