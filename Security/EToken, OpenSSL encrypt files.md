@@ -29,10 +29,22 @@
   
   
 ### Create keys/certificate and write it to the token using pkcs11-tool  
+
+#### *This FAILS on MacOS!!!! Use Linux!!!*
+```
+MacOs Error
+john@CSS-C02FM602MD6R certs % pkcs11-tool --module /usr/local/lib/libeToken.dylib --login --write-object rpi2.der --type privkey --id 1  
+Using slot 0 with a present token (0x0)
+Logging in to "meinung-certs".
+Please enter User PIN:
+error: OpenSSL error during RSA private key parsing
+Aborting.
+```
+
   
 Certificate creation process is the same as described in the document `EToken, certificates, ssh`.  
   
-After keys and certificate have been created, we need to do the following steps (some of which are described here https://sztsian.github.io/2022/03/12/Generate-Key-Pair-With-OpenSSL-And-Import-To-PKCS11-Token.html)  
+After keys and certificate have been created, we need to do the following steps (some of which are described here [Generate Key Pair With OpenSSL And Import To PKCS#11 Token.md](Generate%20Key%20Pair%20With%20OpenSSL%20And%20Import%20To%20PKCS%2311%20Token.md))  
   
 Let's say, we have the following files under `easy-rsa` directory:  
 ```  
@@ -40,16 +52,21 @@ pki/private/meinung-data.key
 pki/reqs/meinung-data.req  
 pki/issued/meinung-data.crt  
 ```  
-  
+
+> If the certificate is in pfx format but der format is needed, the private key and the client certificate without the chain can be extracted with the following commands.  
+`$ openssl pkcs12 -in test-pkcs12.pfx -out test-pkcs12.crt -clcerts -nokeys`  
+`$ openssl pkcs12 -in test-pkcs12.pfx -out test-pkcs12.key -nocerts`
+
 1. Convert private key to DER format:  
    `openssl rsa -in pki/private/meinung-data.key -outform DER -out meinung-data-key.der`  
-  
+
 2. Convert certificate to DER format:  
    `openssl x509 -outform DER -in pki/issued/meinung-data.crt -out meinung-data-crt.der`  
   
 3. Extract public key from .key file:  
    `openssl rsa -in pki/private/meinung-data.key -pubout -out meinung-data-public.key`  
   
+
 4. Write those files to the token  
 ```  
 pkcs11-tool --module /usr/lib/libeToken.so --login --write-object meinung-data-key.der --type privkey --id 1  

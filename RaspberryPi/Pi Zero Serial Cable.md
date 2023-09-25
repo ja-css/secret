@@ -1,0 +1,1 @@
+[![sensors_test.png](https://howtoraspberrypi.com/wp-content/uploads/2019/09/connection-serie-pi.jpg)

@@ -67,12 +67,27 @@ Once you have signed it, you can send the signed certificate and the CA certific
 ---  
 1.5 create pub for ssh  
 `ssh-keygen -f NAME.pem -y > NAME.pub`  
+If this causes error: `Permissions xxxx for 'NAME.pem' are too open`, do `chmod 400 NAME.pem`.
   
   
 ## 2. Install Safe Net Authentication client  
-  
-#### Important: token passwords in Mac version and Linux version are not fully compatible. I've tested alphanumeric and it works fine, however a symbol like `#` causes issues and passwords won't work on either Linux or MacOS.  
-  
+
+> Important: token passwords in Mac version and Linux version are not fully compatible. I've tested alphanumeric and it works fine, however a symbol like `#` causes issues and passwords won't work on either Linux or MacOS.  
+
+> Important: Installing certificates on the token using `Safe Net Authentication client` results in private key installed with permissions `AT_SIGNATURE`, as opposed to `AT_KEYEXCHANGE`. As a result of that the private key can only be used for signature creation, but not for encrypting and decrypting data.  
+There are alternative ways to import the certificate, but each has its drawbacks.  
+>- The document [EToken, OpenSSL encrypt files.md](EToken%2C%20OpenSSL%20encrypt%20files.md) describes using OpenSC's `pkcs11-tool` to import private key, which results in private key being created with permissions to "sign", "encrypt" and "wrap". Those permissions can't be configured. We can encrypt, but according to [EToken vulns.md](EToken%20vulns.md), we shouldn't allow the same key to wrap and encrypt, see doc for details.
+>- The document [EToken: Generate keys on token and run CSR with pkcs11-tools.md](EToken%3A%20Generate%20keys%20on%20token%20and%20run%20CSR%20with%20pkcs11-tools.md) describes a way to generate private key directly on the token using MasterCard's `pkcs11-tools`. It allows to set attributes for the key, so we can allow "sign" and "encrypt" without "wrap", but this key is not exportable and will perish with the token. So, when token breaks you can't recover your key to a different token. This might be desirable in a number of scenarios, but not in all of them.
+>- As of now I'm still looking for a way to be able to import a private key with sign and encrypt only. MasterCard's `pkcs11-tools` don't seem to allow importing a private key (more info here: https://github.com/Mastercard/pkcs11-tools/blob/master/docs/MANUAL.md#p11importcert), so one direction worth investigating is minimal code changes in the original OpenSC's `pkcs11-tool` to allow setting private key attributes (here https://github.com/OpenSC/OpenSC/blob/master/src/tools/pkcs11-tool.c#L3927).  
+P.S. Looks like `pkcs11-tool` already has something of the sort here, need to make sure I'm using the latest version on Linux. (https://github.com/OpenSC/OpenSC/blob/master/src/tools/pkcs11-tool.c#L3927):  
+   `{ "usage-sign",		0, NULL,		OPT_KEY_USAGE_SIGN },`  
+   `{ "usage-decrypt",	0, NULL,		OPT_KEY_USAGE_DECRYPT },`  
+   `{ "usage-derive",	0, NULL,		OPT_KEY_USAGE_DERIVE },`  
+   `{ "usage-wrap",	0, NULL,		OPT_KEY_USAGE_WRAP },`  
+added on Feb 1, 2020, commit: https://github.com/OpenSC/OpenSC/commit/0cd19b59e19a7129f4064fcb94e0e39615ec0cdc  
+On Linux the options exist, but they don't seem to set attributes as expected. Need to debug and fix the code, potentially compare with `pkcs11-tools`.
+
+
 ### Mac  
 https://www.certsign.ro/en/support/safenet-installing-the-device-on-macos/  
 Version for BigSur: [here](http://support.certsign.ro/safenet/SafeNetAuthenticationClient.10.2.111.0.dmg)  
