@@ -86,6 +86,29 @@ P.S. Looks like `pkcs11-tool` already has something of the sort here, need to ma
    `{ "usage-wrap",	0, NULL,		OPT_KEY_USAGE_WRAP },`  
 added on Feb 1, 2020, commit: https://github.com/OpenSC/OpenSC/commit/0cd19b59e19a7129f4064fcb94e0e39615ec0cdc  
 On Linux the options exist, but they don't seem to set attributes as expected. Need to debug and fix the code, potentially compare with `pkcs11-tools`. (here: https://github.com/Mastercard/pkcs11-tools/blob/master/lib/pkcs11_pubk.c#L1022-L1046)  
+Maybe, you shouldn't do import private key, only unwrap?  
+https://www.ibm.com/docs/en/zos/2.5.0?topic=objects-pkcs-11-unwrap-key-csfpuwk-csfpuwk6  
+>  * A new secret key object is created with the decrypted key value.
+>* How to make keys non-exportable?  
+CKA_EXTRACTABLE Attribute: The CKA_EXTRACTABLE attribute is commonly used to control whether a key can be exported.  
+If you set CKA_EXTRACTABLE to CK_FALSE when creating or importing the key, it should make the key non-exportable.
+This attribute is often set during the key generation process.
+>* Investigate wrap/unwrap. How do I make sure one can't wrap and steal a private key?
+>* https://cloud.google.com/kms/docs/wrapping-a-key
+>* `p11unwrap` syntax  
+   you must at least provide:  
+-f, the path to a wrapping key file produced by p11wrap  
+In addition, PKCS#11 attributes can be specified, that will override attributes from the wrapping key file.
+>
+> 
+> - Looks to me that this Could be done:
+>   - 1. Import key with regular permissions
+>   - 2. Wrap
+>   - 3. Unwrap with new permissions
+> - OR
+>   - 1. Create and wrap key with OpenSSL
+>   - 2. Unwrap key with new permissions
+
 
 ### Mac  
 https://www.certsign.ro/en/support/safenet-installing-the-device-on-macos/  

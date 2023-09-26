@@ -179,17 +179,21 @@ If `Message`s are immutable, why not zip them?
 And for best obfuscation, encrypt zip.  
 MessageId can be in Zip's name, or it can be   
   
-a. Common password  
+1. Common password  
 Just zip file, it's a message. Common password for all messages.  
-  
-b. Variable password  
-Computable password, based on MessageId and some common constant.  
-  
-c. Message in message  
-A message with a zip file inside, which is an actual zipped message. Password per message.  
-  
-d. Common password for Message in message  
-Zipped message with a zip file inside, which is an actual zipped message. Featuring a common password for all top level messages, and a password per internal message.  
-  
-e. Variable password for Message in message  
-Same as c, but with calculable password.  
+
+
+2. Variable password  
+Computable password, based on MessageId, some common constant and algorithm (Variator module).  
+
+
+3. Message in message  
+A message with a zip file inside, which is an actual zipped message. AES-encrypted, as any Fidd message, with (1) or (2) on top if desired.  
+   - With this approach we can theoretically hide the real order of messages, only exposing it in the inner layer, but it comes with a significant overhead of full index traversal to get the updates, and theoretically if the Fidd is public, an external observer still could periodically check the contents and keep track of the order in which the messages appeared.  
+   Overall, while that's a super-paranoid measure, it's reasonable to implement, especially given that in naive FTP or other folder-based implementations a full index traversal will still be required to discover new messages.
+
+## P.P.S.
+A lot of components in this design intend to hide metadata.  
+However, since we're operating on files, metadata can be leaked via external file attributes, like creation/change date.  
+Ideally, all file-level metadata should also be erased, let's say dates set to beginning of Unix time, etc. At least for files immediately facing the external world.  
+  * Maybe a special build of FTP server that hides metadata?
