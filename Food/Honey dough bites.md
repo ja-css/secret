@@ -17,5 +17,7 @@ Mix the ingredients well and make the dough.
 Let the dough sit in the fridge for a few hours.  
 Form flat cookies.
 
-Bake at 375 F for 20 minutes, or until golden brown.  
+Bake at 375 F for 20 minutes, or until golden brown (on a parchment list?).  
 After 10 minutes flip cookies.
+
+## Memo: cookies will harden excessively if baked for longer than 30 (25?) minutes.
