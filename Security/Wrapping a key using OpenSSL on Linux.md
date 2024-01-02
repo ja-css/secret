@@ -18,6 +18,7 @@ The OpenSSL commands require several file paths as input values. Define environm
 ```
     PUB_WRAPPING_KEY="WRAPPING_KEY_PATH"
 ```
+
 2.  Set the  `TARGET_KEY`  variable to the full path to the unwrapped (target) key.
 ```
     TARGET_KEY=TARGET_KEY_PATH
@@ -28,10 +29,12 @@ The OpenSSL commands require several file paths as input values. Define environm
 ```
     TEMP_AES_KEY=TEMP_AES_KEY_PATH
 ```
+
 4.  Set the  `WRAPPED_KEY`  variable to the full path where you want to save the wrapped target key that is ready for import.
 ```
     WRAPPED_KEY=WRAPPED_KEY_PATH
 ```
+
 5.  Verify that all the environment variables are set correctly using the following commands:
 ```
     echo "PUB_WRAPPING_KEY: " ${PUB_WRAPPING_KEY}; \
@@ -69,6 +72,7 @@ In this approach, the target key is wrapped with a temporary AES key. The tempor
 ```
     openssl rand -out "${TEMP_AES_KEY}" 32
 ```
+
 2.  Wrap the temporary AES key with the wrapping public key using the  `CKM_RSA_PKCS_OAEP`  algorithm. If the import method is either  `rsa-oaep-3072-sha1-aes-256`  or  `rsa-oaep-4096-sha1-aes-256`, use  `sha1`  for  `rsa_oaep_md`  and  `rsa_mgf1_md`. Use  `sha256`  for  `rsa-oaep-3072-sha256-aes-256`  and  `rsa-oaep-4096-sha256-aes-256`.
 ```
     openssl pkeyutl \
@@ -81,10 +85,12 @@ In this approach, the target key is wrapped with a temporary AES key. The tempor
     -pkeyopt rsa_oaep_md:{sha1|sha256} \
     -pkeyopt rsa_mgf1_md:{sha1|sha256}
 ```
+
 3.  Set the  `OpenSSL_V110`  variable to the path of your  `openssl.sh`  script. If you followed the instructions for  [patching and recompiling OpenSSL](https://cloud.google.com/kms/docs/configuring-openssl-for-manual-key-wrapping)  exactly, you can use this command without modifying the value of the variable.
 ```
     OPENSSL_V110="${HOME}/local/bin/openssl.sh"
 ```
+
 4.  Wrap the target key with the temporary AES key using the  `CKM_AES_KEY_WRAP_PAD`  algorithm, and append it to the  `WRAPPED_KEY`.
 ```
     "${OPENSSL_V110}" enc \

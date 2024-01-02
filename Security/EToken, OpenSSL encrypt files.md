@@ -69,9 +69,9 @@ pki/issued/meinung-data.crt
 
 4. Write those files to the token  
 ```  
-pkcs11-tool --module /usr/lib/libeToken.so --login --write-object meinung-data-key.der --type privkey --id 1  
-pkcs11-tool --module /usr/lib/libeToken.so --login --write-object meinung-data-crt.der --type cert --id 1  
-pkcs11-tool --module /usr/lib/libeToken.so --login --write-object meinung-data-public.key --type pubkey --id 1  
+pkcs11-tool --module /usr/lib/libeToken.so --login --write-object meinung-data-key.der --type privkey --id 1 --label 1
+pkcs11-tool --module /usr/lib/libeToken.so --login --write-object meinung-data-crt.der --type cert --id 1 --label 1
+pkcs11-tool --module /usr/lib/libeToken.so --login --write-object meinung-data-public.key --type pubkey --id 1 --label 1
 ```  
   
 ### Encrypt data using public key and openssl, and decrypt it with pkcs11-tool using token  

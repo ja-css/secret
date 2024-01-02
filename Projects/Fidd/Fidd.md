@@ -1,5 +1,11 @@
 # Fidd  
-  
+
+Keeping your personal information off the Internet is really hard.  
+Your stuff is scattered all over the place.  
+Addresses, employment history, your family relationships and phone numbers.  
+*Jack Rhysider.*
+
+
 ## 1. Fidd folder structure  
   
 `Fiddler` - is an actor that owns one or more `Fidds`. The ownership is established by `Fiddler`'s key pair.  

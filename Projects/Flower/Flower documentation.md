@@ -1,4 +1,24 @@
-TODO: Multi-parent is needed.    
+> TODO: Extract fields or properties of parameters to serve as @In  
+> For example,
+
+     4 |    @State Bundle world;
+     5 |
+     6 |    @SimpleStepFunction    
+     7 |    static Transition HELLO_STEP(@In(from="world.name") String worldName) {    
+    10 |      ...    
+    11 |    }    
+
+> and Maybe even:
+
+    13 |    @SimpleStepFunction    
+    14 |    static Transition HELLO_STEP2(@In(from="world.getName()") String worldName) {
+    15 |      ...    
+    16 |    }    
+
+
+> TODO: Multi-parent is needed.    
+
+
 Example:   
 1. REST API call triggers a Flow Instance #1.  
 2. Flow instance #1 sends a message to a queue  
@@ -229,7 +249,7 @@ WARNING: Please Do **NOT** use objects `FlowExec` or `Flower` directly inside Fl
   
 Every function parameter has a name. Parameter names are used to map parameters in Global Function Calls, which we will discuss in section **TODO: ADD SECTION FOR GLOBAL FUNCTIONS AND CALLS**.  
 Similarly to [Flow and Function names](#flow-and-function-names), parameter names can be assigned explicitly in annotations, e.g.:  
-`@In(name = "hello, ...) String hello`  
+`@In(name = "hello", ...) String hello`  
   
 The following parameter annotations have other optional elements with default values:  
 - **@In**, **@InFromFlow**:  
