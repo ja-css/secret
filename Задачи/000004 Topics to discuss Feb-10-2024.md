@@ -3,6 +3,7 @@
 - Дальнейший разбор библиотек
   - Библиотеки NullAway, Immutables, Jackson;
   - Библиотека retrofit
+    - REST API - Reverse engineering
 
 - Идеи для прикладной разработки
   - скрейпинг, мониторинг и анализ баз данных
@@ -10,7 +11,7 @@
       - есть ли Instacart во всех странах?
     - KuCoin: анализ ценовых трендов
 - Новые технологии
-  - Clickhouse + Graphana
+  - Clickhouse + Grafana
 
 - Продолжение - плагин для парной разработки https://plugins.jetbrains.com/plugin/14225-codetogether-live/versions#tabs;
   - prerequisite - установка на community edition
