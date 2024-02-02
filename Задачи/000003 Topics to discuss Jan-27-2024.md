@@ -9,3 +9,9 @@
 - Обсуждение взаимодействия на github, repositories, pull requests;
 - Обсуждение многопоточности
   - в т.ч. Listenable Futures / Completable Futures на примерах;
+
+Сделано:
+- Обсуждение многопоточности
+  - в т.ч. Listenable Futures / Completable Futures на примерах;
+- Unit tests, mockito;
+- Разбор структуры проекта JavaFX;
