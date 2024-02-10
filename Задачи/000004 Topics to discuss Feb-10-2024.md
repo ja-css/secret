@@ -12,6 +12,7 @@
     - KuCoin: анализ ценовых трендов
 - Новые технологии
   - Clickhouse + Grafana
+    - https://youtu.be/Ve-VPDxHgZU 
 
 - Продолжение - плагин для парной разработки https://plugins.jetbrains.com/plugin/14225-codetogether-live/versions#tabs;
   - prerequisite - установка на community edition
