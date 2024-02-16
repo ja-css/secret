@@ -1,3 +1,5 @@
+0. Google Java format plugin https://github.com/google/google-java-format
+    https://github.com/google/google-java-format/blob/master/README.md#intellij-jre-config
 1. Разбор кода реализованных/портированных из Vert.x расширений Executor, обсуждение возможных дополнений;
 2. Обзор технологий баз данных (high-level), включая Clickhouse (Disclaimer: Clickhouse для меня технология новая)
    - https://github.com/ClickHouse/clickhouse-java
