@@ -1,0 +1,3 @@
+https://www.timeanddate.com/astronomy/usa/anchorage
+
+"Most media in most locales publish the hour and minute of sunrise and sunset. Subtract the former from the latter, divide by two, and add the result to the former to find the hour and minute of local high noon. Select the appropriate corner of your house (any vertical object that will cast a shadow at the location of interest) and, precisely at the hour and minute of high noon, mark a convenient spot up the shadow line from a comparable point on the shadow line at the bottom end. Voila—you have the line of true north."

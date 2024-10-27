@@ -15,17 +15,26 @@ Here's how it's done:
 ---
 1. Generate key on the token:  
 `p11keygen -l /usr/local/lib/libeToken.dylib -k rsa -b 2048 -i test-rsa-2048 encrypt decrypt sign verify`
-
+`p11keygen -l /usr/lib/libeToken.so -k rsa -b 2048 -i test-rsa-2048 encrypt decrypt sign verify`
 
 2. Create CSR request from the token:  
 `p11req -l /usr/local/lib/libeToken.dylib -i test-rsa-2048 -d '/CN=test/OU=my dept/C=BE' -H sha256 -e DNS:anotherhost.int -e email:writeme\@mastercard.com`
+`p11req -l /usr/lib/libeToken.so -i test-rsa-2048 -d '/CN=test/OU=my dept/C=BE' -H sha256 -e DNS:anotherhost.int -e email:writeme\@mastercard.com`
 
 
 3. Import certificate signed by our CA back to the token:  
 ```
-$ p11importcert -f test.crt -i test-rsa-2048
+$ p11importcert -l /usr/local/lib/libeToken.dylib -f test.crt -i test-rsa-2048
 PEM format detected
 p11importcert: importing certificate succeeded.
+```
+```
+$ p11importcert -l /usr/lib/libeToken.so -f test.crt -i test-rsa-2048
+```
+cer to pub
+```
+openssl x509 -pubkey -noout -in MY.crt > MY.pem
+ssh-keygen -f MY.pem -i -m PKCS8 > MY.openssh.pub
 ```
 
 DONE!

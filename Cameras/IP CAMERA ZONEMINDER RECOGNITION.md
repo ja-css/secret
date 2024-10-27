@@ -6,7 +6,7 @@ https://github.com/ZoneMinder/mlapi
 https://zmeventnotification.readthedocs.io/en/latest/index.html  
 http://www.onvif.org/specs/stream/ONVIF-Streaming-Spec-v210.pdf  
   
-rust!  
+Neolink - RTSP for their native protocol (rust!)  
 https://github.com/thirtythreeforty/neolink  
   
 some tech info:  

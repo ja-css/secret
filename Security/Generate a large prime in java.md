@@ -28,3 +28,8 @@ public class PrimeGenerator {
     }
 }
 ```
+
+False. The prime number theorem estimates the number of primes less than a given number 
+`N` as `N / ln(N)`.  
+E.g.: For `N = 10^15`, this estimate would be:  
+10^15 / ln(10^15) ≈ 10^15 / 34.5388 ≈ `2.9 × 10^13`

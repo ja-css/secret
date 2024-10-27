@@ -1,0 +1,1 @@
+ffplay rtsp://username:password@server:554/path

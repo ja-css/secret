@@ -35,7 +35,7 @@ The binary `easyrsa` can be found in
 `sudo ./easyrsa build-ca nopass`  
   
 ---  
-1.2 **Create a certificate request:**  
+1.2 **Create a certificate request (CSR):**  
   
 `sudo ./easyrsa gen-req NAME nopass`  
 This will create  
@@ -46,7 +46,7 @@ ALTERNATIVELY: import an external request:
 `sudo ./easyrsa import-req /path/to/NAME.req NAME`  
   
 ---  
-then sign a cert  
+then sign a CSR creating a cert
 `./easyrsa sign-req client NAME`  
   
 ---  
@@ -68,7 +68,12 @@ Once you have signed it, you can send the signed certificate and the CA certific
 1.5 create pub for ssh  
 `ssh-keygen -f NAME.pem -y > NAME.pub`  
 If this causes error: `Permissions xxxx for 'NAME.pem' are too open`, do `chmod 400 NAME.pem`.
-  
+
+OR
+```
+openssl x509 -pubkey -noout -in MY.crt > MY.pem
+ssh-keygen -f MY.pem -i -m PKCS8 > MY.openssh.pub
+```
   
 ## 2. Install Safe Net Authentication client  
 
@@ -274,5 +279,5 @@ In the above command, substitute the `PUBLIC_KEY_STR` with the output from the `
 - `sudo systemctl restart ssh`  
   
 ### Log In  
-`ssh -I /usr/lib/libeToken.so IP_ADDR`  
+`ssh -I /usr/lib/libeToken.so admin@34.203.194.238`  
 `ssh -I /usr/local/lib/libeToken.dylib IP_ADDR`

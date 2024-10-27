@@ -11,7 +11,8 @@ iptables -F
 iptables -X  
   
   
-# Block All  
+# B
+lock All  
 iptables -P OUTPUT DROP  
 iptables -P INPUT DROP  
 iptables -P FORWARD DROP  
